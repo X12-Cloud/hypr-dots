@@ -11,5 +11,6 @@ ShellRoot {
     Loader {
         active: true
         sourceComponent: Bar{}
+        z: 99
     }
 }

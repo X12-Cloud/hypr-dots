@@ -1,28 +1,34 @@
 import QtQuick
+import QtQuick.Window
 import Quickshell
 import Quickshell.Hyprland
 
 PanelWindow {
     id: panel
-
+    anchors {
+        left: true
+	top: true
+	right: true
+    }
+    //anchors: [top, left, right]
+    //x: 0
+    //y: 0
+    implicitWidth: Screen.width
     implicitHeight: 40
-    anchors.top: parent.top
-    anchors.left: parent.left
-    anchors.right: parent.right
 
     Rectangle {
         id: bar
         anchors.fill: parent
         color: "#1a1a1a"
-        radius: 15
+        radius: 0
         border.color: "#333333"
-        border.width:3
+        border.width: 1
 
         Row {
             id: workspacesrow
 
             anchors {
-                // left.parent.left
+                left: parent.left
                 verticalCenter: parent.verticalCenter
                 leftMargin: 16
             }

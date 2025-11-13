@@ -35,12 +35,19 @@ alias neofetch 'fastfetch'
 set PATH $PATH /home/mohamed/.local/bin
 
 # Custom aliases
+# Fish source
 function source-shell
     source ~/.config/fish/config.fish
 end
 
+# Rofi
 function rofi
-    "$HOME/.config/rofi/run.sh" $argv    
+    "$HOME/.config/rofi/run.sh" $argv
+end
+
+# Nyproj
+function nyproj
+    "$HOME/.config/tmux/nyproj.sh"
 end
 
 # Nytro

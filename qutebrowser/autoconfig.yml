@@ -7,4 +7,6 @@
 config_version: 2
 settings:
   content.javascript.clipboard:
+    https://chat.qwen.ai: access-paste
+    https://chatgpt.com: access-paste
     https://gemini.google.com: access-paste

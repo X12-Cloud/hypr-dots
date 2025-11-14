@@ -9,7 +9,6 @@ end
 if status is-interactive
     # Commands to run in interactive sessions can go here
     set fish_greeting
-
 end
 
 starship init fish | source
@@ -23,7 +22,7 @@ alias pacman 'sudo pacman'
 alias sleep 'systemctl suspend'
 alias ls 'eza --icons'
 alias clear "printf '\033[2J\033[3J\033[1;1H'"
-alias q 'quickshell'
+alias qs 'quickshell'
 alias neofetch 'fastfetch'
 
 # function fish_prompt

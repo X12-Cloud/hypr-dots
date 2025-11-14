@@ -13,7 +13,7 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: 50 // Slightly taller panel for M3 aesthetic
+    implicitHeight: 45 // Slightly tall panel for M3 aesthetic
 
     // --- Date/Time Properties and Logic ---
     property string currentTime: ""
@@ -26,7 +26,7 @@ PanelWindow {
         onTriggered: {
             var now = new Date();
             // Format: Month Day, Year | H:MM:SS AM/PM (e.g., Oct 31, 2025 | 10:24:48 PM)
-            currentTime = Qt.formatDate(now, "MMM d, yy | ") + Qt.formatTime(now, "h:mm:ss AP"); // now.getHours() + " : " + now.getMinutes() 
+            currentTime = Qt.formatDate(now, "MMM d, yy  |  ") + Qt.formatTime(now, "h:mm:ss AP"); // now.getHours() + " : " + now.getMinutes() 
         }
     }
     Component.onCompleted: {
@@ -40,17 +40,19 @@ PanelWindow {
 
         // M3 Color: Surface Container (The main background color)
         color: "#1C1B1F"
-        radius: 0
+	radius: 0 // 20 doesnt work
+	clip: true
         border.width: 0 // No border for a cleaner M3 look
 
         Row {
             id: workspacesrow
 
-            // Workspaces on the Left (Material padding)
+            // Workspaces on the Left/Center (Material padding)
             anchors {
-                left: parent.left
+		//left: parent.left
+		horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
-                leftMargin: 12
+		leftMargin: 12
             }
             spacing: 8
 
@@ -60,7 +62,7 @@ PanelWindow {
                 Rectangle {
                     width: 30 // Wider button
                     height: 30 // Taller button
-                    radius: 100 // M3 rounded corners
+                    radius: 100 // M3 rounded corners - circle
 
                     // M3 Color: Primary Container for active, Surface Container Low for inactive
                     color: modelData.active ? "#EADDFF" : "#201F24"
@@ -105,8 +107,8 @@ PanelWindow {
 
             // M3 Color: On Surface
             color: "#E6E1E5"
-            font.pixelSize: 14
-            font.family: "Roboto, sans-serif"
+            font.pixelSize: 16
+            font.family: "Inter, Roboto, sans-serif"
         }
     }
 }

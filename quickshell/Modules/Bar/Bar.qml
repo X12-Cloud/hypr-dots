@@ -5,68 +5,58 @@ import Quickshell.Hyprland
 
 PanelWindow {
     id: panel
+    anchors { left: true; top: true; right: true }
+    implicitHeight: 45
 
-    // --- Anchor Configuration ---
-    anchors {
-        left: true
-        top: true
-        right: true
-    }
-
-    implicitHeight: 45 // Slightly tall panel for M3 aesthetic
-
-    // --- Date/Time Properties and Logic ---
+    // ---------------- Date/Time Logic ----------------
     property string currentTime: ""
 
     Timer {
         id: timeUpdater
-        interval: 1000 // 1 second
+        interval: 1000
         running: true
         repeat: true
         onTriggered: {
             var now = new Date();
-            // Format: Month Day, Year | H:MM:SS AM/PM (e.g., Oct 31, 2025 | 10:24:48 PM)
-            currentTime = Qt.formatDate(now, "MMM d, yy  |  ") + Qt.formatTime(now, "h:mm:ss AP"); // now.getHours() + " : " + now.getMinutes() 
+            currentTime = Qt.formatDate(now, "MMM d, yy  |  ")
+                        + Qt.formatTime(now, "h:mm:ss AP");
         }
     }
-    Component.onCompleted: {
-        timeUpdater.triggered();
-    }
-    // -----------------------------------------------------------------
+    Component.onCompleted: timeUpdater.triggered()
 
+    // ------------------- Main Bar --------------------
     Rectangle {
         id: bar
         anchors.fill: parent
-
-        // M3 Color: Surface Container (The main background color)
-        color: "#1C1B1F"
-	radius: 0 // 20 doesnt work
-	clip: true
-        border.width: 0 // No border for a cleaner M3 look
+        color: "#1C1B1F"  // M3 surface
+        clip: true
+        border.width: 0
 
         Row {
-            id: workspacesrow
-
-            // Workspaces on the Left/Center (Material padding)
+            id: workspacesRow
             anchors {
-		//left: parent.left
-		horizontalCenter: parent.horizontalCenter
+                horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
-		leftMargin: 12
+                leftMargin: 12
             }
             spacing: 8
 
+            // ---------------- Workspace Pills ----------------
             Repeater {
                 model: Hyprland.workspaces
 
                 Rectangle {
-                    width: 30 // Wider button
-                    height: 30 // Taller button
-                    radius: 100 // M3 rounded corners - circle
-
-                    // M3 Color: Primary Container for active, Surface Container Low for inactive
+                    id: pill
+                    radius: 999
+                    height: 30
+                    width: modelData.active ? 46 : 30
                     color: modelData.active ? "#EADDFF" : "#201F24"
-                    border.width: 0 // No borders
+                    scale: modelData.active ? 1.12 : 1.0
+                    border.width: 0
+
+                    Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+                    Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                    Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutBack } }
 
                     MouseArea {
                         anchors.fill: parent
@@ -74,41 +64,55 @@ PanelWindow {
                     }
 
                     Text {
-                        // M3 Color: On Primary Container for active, On Surface for inactive
-                        text: modelData.id
                         anchors.centerIn: parent
+                        text: modelData.id
                         color: modelData.active ? "#21005D" : "#E6E1E5"
-                        font.pixelSize: 14 // Slightly larger font
-                        font.family: "Roboto, sans-serif" // Roboto or Inter for M3 feel
+                        font.pixelSize: 14
+                        font.family: "Roboto, sans-serif"
+                        opacity: modelData.active ? 1.0 : 0.75
+                        Behavior on opacity { NumberAnimation { duration: 180 } }
                     }
                 }
             }
 
+            // Show this if no workspaces
             Text {
                 visible: Hyprland.workspaces.length === 0
                 text: "No workspaces"
-                color: "#E6E1E5" // M3 On Surface
+                color: "#E6E1E5"
                 font.pixelSize: 14
             }
         }
 
-        // ---------------- Date and Time Widget (Far Right) ----------------
-        Text {
-            id: timeDisplay
-
-            text: panel.currentTime
-
-            // Anchors to place it on the far right (Material padding)
+        // ---------------- Time Widget (Clickable) ----------------
+        Rectangle {
+            id: timeContainer
+            radius: 10
+            height: 32
+            color: "#33FFFFFF"  // translucent grey
+            border.width: 0
             anchors {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
                 rightMargin: 12
             }
+            width: timeDisplay.contentWidth + 24
 
-            // M3 Color: On Surface
-            color: "#E6E1E5"
-            font.pixelSize: 16
-            font.family: "Inter, Roboto, sans-serif"
+            MouseArea {
+                anchors.fill: parent
+                onClicked: rightSidebar.visible = !rightSidebar.visible
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            Text {
+                id: timeDisplay
+                text: panel.currentTime
+                anchors.centerIn: parent
+                color: "#ECECEC"
+                font.pixelSize: 16
+                font.family: "Inter, Roboto, sans-serif"
+            }
         }
     }
 }

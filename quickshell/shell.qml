@@ -1,16 +1,18 @@
-//@ pragma UseQApplication
-
 import QtQuick
 import Quickshell
-import QtQuick.Controls
+import Quickshell.Hyprland
 import "./Modules/Bar"
+import "./Modules/RightSidebar" as RS
 
 ShellRoot {
-    id: root
+    Loader { active: true; sourceComponent: Bar{} }
 
-    Loader {
-        active: true
-        sourceComponent: Bar{}
-        z: 99
+    RS.RightSidebar { id: rightSidebar }
+
+    // Optional shortcut via Hyprland global shortcut
+    GlobalShortcut {
+        name: "toggle-sidebar"
+        description: "Toggle right sidebar"
+        onPressed: { rightSidebar.visible = !rightSidebar.visible }
     }
 }

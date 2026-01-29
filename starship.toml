@@ -1,0 +1,23 @@
+# ── Minimal Starship Prompt ──
+add_newline = false
+
+format = """$directory$git_branch$git_status $character"""
+
+[directory]
+truncation_length = 3
+style = "bold cyan"
+read_only = ""
+
+[git_branch]
+symbol = " "
+style = "purple"
+format = " [$symbol$branch]($style)"
+
+[git_status]
+style = "dim purple"
+format = " [$all_status]($style)"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vicmd_symbol = "[❮](bold yellow)"

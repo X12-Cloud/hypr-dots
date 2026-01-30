@@ -1,36 +1,36 @@
 {
     "label" : "lock",
-    "action" : "loginctl lock-session",
-    "text" : "lock",
+    "action" : "hyprlock",
+    "text" : "Lock",
     "keybind" : "l"
 }
 {
     "label" : "hibernate",
-    "action" : "systemctl hibernate || loginctl hibernate",
-    "text" : "save",
+    "action" : "systemctl hibernate",
+    "text" : "Hibernate",
     "keybind" : "h"
 }
 {
     "label" : "logout",
-    "action" : "pkill Hyprland || pkill sway || pkill niri || loginctl terminate-user $USER",
-    "text" : "logout",
+    "action" : "hyprctl dispatch exit 0",
+    "text" : "Logout",
     "keybind" : "e"
 }
 {
     "label" : "shutdown",
-    "action" : "systemctl poweroff || loginctl poweroff",
-    "text" : "power_settings_new",
+    "action" : "systemctl poweroff",
+    "text" : "Shutdown",
     "keybind" : "s"
 }
 {
-    "label" : "suspend",
-    "action" : "systemctl suspend || loginctl suspend",
-    "text" : "bedtime",
-    "keybind" : "u"
+    "label" : "reboot",
+    "action" : "systemctl reboot",
+    "text" : "Reboot",
+    "keybind" : "r"
 }
 {
-    "label" : "reboot",
-    "action" : "systemctl reboot || loginctl reboot",
-    "text" : "restart_alt",
-    "keybind" : "r"
+    "label" : "suspend",
+    "action" : "systemctl suspend",
+    "text" : "Suspend",
+    "keybind" : "u"
 }

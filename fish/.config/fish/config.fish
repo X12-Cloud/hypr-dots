@@ -58,7 +58,7 @@ function nytro
     "/run/media/mohamed/Mohamed/Mohameds place/X.co/Nytrogen - Compiler/Nytro-0.1/run.sh" $argv
 end
 
-fastfetch # --config arch
+fastfetch -c minimal
 # echo 'Supernova mode ON'
 
 # Add cargo bin to PATH for anyrun

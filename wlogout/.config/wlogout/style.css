@@ -1,42 +1,40 @@
 * {
     font-family: "Inter", "sans-serif";
-    font-weight: 500; /* Medium weight looks best for UI */
+    font-weight: 600; /* Bolder for M3 feel */
 }
 
 window {
-    /* This creates a soft glow in the center that fades to a dark vignette */
-    background-color: transparent;
-    background-image: radial-gradient(
-        circle, 
-        rgba(0, 0, 0, 0.1) 0%, 
-        rgba(0, 0, 0, 0.6) 100%
-    );
+    background-color: rgba(0, 0, 0, 0.5); /* Dim the screen more */
 }
 
 button {
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 25%;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: rgba(45, 45, 45, 0.3);
-    margin: 20px;
-    border-radius: 60px;
+    background-size: 40%; /* Icons are bigger now */
+    border: 2px solid rgba(255, 255, 255, 0.05); /* Subtle ring */
+    background-color: rgba(255, 255, 255, 0.05); /* Very light glass */
+    margin: 15px;
+    border-radius: 40px; /* Squircle shape */
     color: #ffffff;
-    font-size: 16px; /* Clean, readable size */
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s cubic-bezier(.55, 0, .28, 1); /* Smooth M3 easing */
 }
 
-button:focus, button:active, button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    color: #ffffff; /* Keeps text white on hover */
-    outline-style: none;
+button:hover, button:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4); /* Glow on hover */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Soft glow */
 }
 
-/* Icon Paths */
-#lock { background-image: url("/usr/share/wlogout/icons/lock.png"); }
-#logout { background-image: url("/usr/share/wlogout/icons/logout.png"); }
-#suspend { background-image: url("/usr/share/wlogout/icons/suspend.png"); }
-#hibernate { background-image: url("/usr/share/wlogout/icons/hibernate.png"); }
-#shutdown { background-image: url("/usr/share/wlogout/icons/shutdown.png"); }
-#reboot { background-image: url("/usr/share/wlogout/icons/reboot.png"); }
+/* Make labels look better under the buttons */
+button label {
+    font-size: 18px;
+    margin-top: 110px; /* Adjust based on icon size */
+}
+
+/* Icon Paths - Ensure these point to the right place */
+#lock { background-image: url("icons/lock_reset_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
+#logout { background-image: url("icons/logout_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
+#suspend { background-image: url("icons/pause_circle_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
+#hibernate { background-image: url("icons/mode_standby_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
+#shutdown { background-image: url("icons/power_settings_circle_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
+#reboot { background-image: url("icons/restart_alt_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }

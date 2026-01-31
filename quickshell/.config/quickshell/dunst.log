@@ -3,3 +3,5 @@ Notification received: Hello -
 Notification received: VendorCo ProductCode can be safely unplugged - Device can be removed.
 Notification received: Writing data to Kingston DataTraveler 3.0 - Device should not be unplugged.
 Notification received: Kingston DataTraveler 3.0 can be safely unplugged - Device can be removed.
+Notification received: Unmounting Mohamed - Disconnecting from filesystem.
+Notification received: Mohamed unmounted - Filesystem has been disconnected.

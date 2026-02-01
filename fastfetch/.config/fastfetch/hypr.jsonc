@@ -1,14 +1,21 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
   "logo": {
-    "type": "small",
+    "type": "sixel",
+    "source": "$HOME/dotfiles/fastfetch/.config/fastfetch/assets/images/hyprland_logo.png",
+    "width": 28,
+    "height": 12,
     "padding": {
-      "top": 2,
-      "left": 2
+      "top": 1,
+      "left": 2,
+      "right": 4
     }
   },
   "display": {
-    "separator": " ➜  "
+    "separator": "  󰄾  ",
+    "color": {
+      "keys": "cyan"
+    }
   },
   "modules": [
     {

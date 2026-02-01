@@ -1,34 +1,67 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "logo": {
+    "type": "builtin"
+  },
+  "display": {
+    "separator": " 󰄾 ",
+    "color": {
+      "keys": "magenta",
+      "output": "white"
+    },
+    "key": {
+      "width": 15
+    }
+  },
   "modules": [
-    "title",
-    "separator",
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "packages",
-    "shell",
-    "display",
-    "de",
-    "wm",
-    "wmtheme",
-    "theme",
-    "icons",
-    "font",
-    "cursor",
-    "terminal",
-    "terminalfont",
-    "cpu",
-    "gpu",
-    "memory",
-    "swap",
-    "disk",
-    "localip",
-    "battery",
-    "poweradapter",
-    "locale",
+    {
+        "type": "title",
+        "color": {
+            "user": "cyan",
+            "at": "white",
+            "host": "blue"
+        }
+    },
+    {
+      "type": "separator",
+      "string": "━" 
+    },
+    
+    // --- SYSTEM SECTION ---
+    { "type": "custom", "format": "┌─󰣇 System", "outputColor": "blue" },
+    { "type": "os", "key": "│ ├─󰣇 OS", "keyColor": "blue" },
+    { "type": "kernel", "key": "│ ├─ KR", "keyColor": "blue" },
+    { "type": "uptime", "key": "│ ├─󱎫 UP", "keyColor": "blue" },
+    { "type": "packages", "key": "│ ├─󰏗 PK", "keyColor": "blue" },
+    { "type": "shell", "key": "│ └─󱆃 SH", "keyColor": "blue" },
     "break",
-    "colors"
+
+    // --- DESKTOP SECTION ---
+    { "type": "custom", "format": "┌─ Desktop", "outputColor": "cyan" },
+    { "type": "wm", "key": "│ ├─ WM", "keyColor": "cyan" },
+    { "type": "wmtheme", "key": "│ ├─󰉼 TH", "keyColor": "cyan" },
+    { "type": "font", "key": "│ ├─󰛖 FN", "keyColor": "cyan" },
+    { "type": "terminal", "key": "│ └─ TR", "keyColor": "cyan" },
+    "break",
+
+    // --- HARDWARE SECTION ---
+    { "type": "custom", "format": "┌─ Hardware", "outputColor": "yellow" },
+    { "type": "cpu", "key": "│ ├─ CP", "keyColor": "yellow" },
+    { "type": "gpu", "key": "│ ├─󰢮 GP", "keyColor": "yellow" },
+    { "type": "memory", "key": "│ ├─ RM", "keyColor": "yellow" },
+    { "type": "disk", "key": "│ ├─󰋊 DK", "keyColor": "yellow" },
+    { "type": "battery", "key": "│ └─󰁹 BT", "keyColor": "yellow" },
+    "break",
+
+    // --- NETWORK ---
+    { "type": "custom", "format": "┌─󰩟 Network", "outputColor": "magenta" },
+    { "type": "localip", "key": "│ ├─󰩟 IP", "keyColor": "magenta" },
+    { "type": "locale", "key": "│ └─󰗊 LC", "keyColor": "magenta" },
+    "break",
+
+    {
+      "type": "colors",
+      "symbol": "circle"
+    }
   ]
 }

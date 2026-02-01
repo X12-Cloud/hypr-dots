@@ -2,10 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Services.Notifications
 
 PanelWindow {
     id: sidebar
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.margins.top: 45 // bars height
     anchors.right: true
     anchors.top: true
     anchors.bottom: true

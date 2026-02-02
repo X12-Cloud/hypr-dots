@@ -7,7 +7,4 @@
 config_version: 2
 settings:
   content.javascript.clipboard:
-    https://docsbot.ai: access-paste
     https://gemini.google.com: access-paste
-    https://github.com: access-paste
-    https://raffimolero.github.io: access-paste

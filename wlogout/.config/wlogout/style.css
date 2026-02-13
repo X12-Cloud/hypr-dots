@@ -1,28 +1,30 @@
+/* General reset */
 * {
     font-family: "Inter", "sans-serif";
     font-weight: 600; /* Bolder for M3 feel */
 }
 
 window {
-    background-color: rgba(0, 0, 0, 0.5); /* Dim the screen more */
+    background-color: rgba(0, 0, 0, 0.75); /* Darker backdrop to match screenshot */
 }
 
 button {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 40%; /* Icons are bigger now */
-    border: 2px solid rgba(255, 255, 255, 0.05); /* Subtle ring */
-    background-color: rgba(255, 255, 255, 0.05); /* Very light glass */
+    border: 2px solid rgba(255, 255, 255, 0.03); /* More subtle ring */
+    background-color: rgba(30, 30, 30, 0.4); /* Deeper, darker glass base */
     margin: 15px;
     border-radius: 40px; /* Squircle shape */
     color: #ffffff;
-    transition: all 0.3s cubic-bezier(.55, 0, .28, 1); /* Smooth M3 easing */
+    transition: all 0.3s cubic-bezier(.62, 0, .32, 1); /* Smooth M3 easing */
 }
 
 button:hover, button:focus {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.4); /* Glow on hover */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Soft glow */
+    background-color: rgba(255, 255, 255, 0.1); /* Brighter glass on hover */
+    border: 2px solid rgba(255, 255, 255, 0.6); /* Stronger glow on hover */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
+    border-radius: 180px; /* Circle shape */
 }
 
 /* Make labels look better under the buttons */
@@ -31,7 +33,7 @@ button label {
     margin-top: 110px; /* Adjust based on icon size */
 }
 
-/* Icon Paths - Ensure these point to the right place */
+/* Icon Paths */
 #lock { background-image: url("icons/lock_reset_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
 #logout { background-image: url("icons/logout_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }
 #suspend { background-image: url("icons/pause_circle_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg"); }

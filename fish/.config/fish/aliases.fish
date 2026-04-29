@@ -1,5 +1,10 @@
 # Custom Stuff
 
+# Source fish
+function source-shell
+    source ~/.config/fish/config.fish
+end
+
 # Git
 function commit
     "$HOME/.config/scripts/git/commit.sh" $argv
@@ -15,12 +20,18 @@ function nyproj
     "$HOME/.config/tmux/nyproj.sh"
 end
 
-# Nytro
-function nytro
-    "/run/media/mohamed/Mohamed/Mohameds place/X.co/Nytrogen - Compiler/Nytro-0.1/run.sh" $argv
-end
-
 # Geometry Dash
 function gdplay
     "$HOME/.config/fish/functions/gd.sh"
 end
+
+
+# Old stuff
+# function theme
+#     $HOME/.config/fish/theme-switcher $argv
+# end
+
+# function fish_prompt
+#   set_color cyan; echo (pwd)
+#   set_color green; echo '> '
+# end

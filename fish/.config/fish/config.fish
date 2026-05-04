@@ -18,6 +18,9 @@ alias qs 'quickshell'
 alias neofetch 'fastfetch'
 alias s 'sudo'
 
+alias openvault='sudo cryptsetup open ~/secrets.img my_vault && sudo mount /dev/mapper/my_vault ~/private_stuff'
+alias closevault='sudo umount ~/private_stuff && sudo cryptsetup close my_vault'
+
 # Created by `pipx` on 2025-07-19 08:14:58
 set PATH $PATH /home/mohamed/.local/bin
 # fish_add_path $HOME/.cargo/bin

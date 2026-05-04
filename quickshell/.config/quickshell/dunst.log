@@ -15,3 +15,5 @@ Notification received: Mohamed unmounted - Filesystem has been disconnected.
 Notification received: Account - You have signed in successfully
 Notification received: Unmounting Mohamed - Disconnecting from filesystem.
 Notification received: Mohamed unmounted - Filesystem has been disconnected.
+Notification received: Unmounting 1.1 GB Volume - Disconnecting from filesystem.
+Notification received: 1.1 GB Volume unmounted - Filesystem has been disconnected.

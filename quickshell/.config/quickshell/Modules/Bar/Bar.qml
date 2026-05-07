@@ -50,7 +50,7 @@ PanelWindow {
                     radius: 999
                     height: 30
                     width: modelData.active ? 46 : 30
-                    color: modelData.active ? "#EADDFF" : "#201F24"
+                    color: modelData.active ? "#D6BEFA" : "#262130"
                     scale: modelData.active ? 1.12 : 1.0
                     border.width: 0
 

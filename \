@@ -13,10 +13,9 @@ ShellRoot {
     NotificationServer {
         id: notificationsService; 
         keepOnReload: true;
-        onNotification: (n) => {
-            n.tracked = true
-            console.log("Summary: " + notification.summary)
-            console.log("Body: " + notification.body)
+        onNotification: (notification) => {
+            notification.tracked = true
+            console.log("Caught notification: " + notification.summary)
         }
     }
 

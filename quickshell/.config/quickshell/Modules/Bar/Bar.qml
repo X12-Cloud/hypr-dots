@@ -7,6 +7,7 @@ PanelWindow {
     id: panel
     anchors { left: true; top: true; right: true }
     implicitHeight: 45
+    color: "transparent"
 
     // ---------------- Date/Time Logic ----------------
     property string currentTime: ""
@@ -30,7 +31,14 @@ PanelWindow {
         anchors.fill: parent
         color: "#1C1B1F"  // M3 surface
         clip: true
+        radius: 30
+        border.color: "white"
         border.width: 0
+
+        anchors.topMargin: 3
+        anchors.rightMargin: 10
+        anchors.leftMargin: 10
+        anchors.bottomMargin: 0
 
         Row {
             id: workspacesRow
@@ -49,7 +57,7 @@ PanelWindow {
                     id: pill
                     radius: 999
                     height: 30
-                    width: modelData.active ? 46 : 30
+                    width: modelData.active ? 32 : 28 // 46 : 30
                     color: modelData.active ? "#D6BEFA" : "#262130"
                     scale: modelData.active ? 1.12 : 1.0
                     border.width: 0
@@ -87,7 +95,7 @@ PanelWindow {
         // ---------------- Time Widget (Clickable) ----------------
         Rectangle {
             id: timeContainer
-            radius: 10
+            radius: 30
             height: 32
             color: "#2C2C2E"  // translucent grey
             border.width: 0
@@ -100,8 +108,8 @@ PanelWindow {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: rightSidebar.visible = !rightSidebar.visible
-		hoverEnabled: true
+                onClicked: rightSidebar.active = !rightSidebar.active
+                hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
             }
 

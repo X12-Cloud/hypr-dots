@@ -9,25 +9,38 @@ import Quickshell.Services.Notifications 0.0
 PanelWindow {
     id: sidebar
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.margins.top: 45 
+    WlrLayershell.exclusionMode: active ? ExclusionMode.Exclusive : ExclusionMode.Ignore
+    WlrLayershell.margins.top: 50
+    WlrLayershell.margins.right: 5
+    WlrLayershell.margins.bottom: 5
     anchors.right: true
     anchors.top: true
     anchors.bottom: true
-    implicitWidth: 360
-    color: "#1C1C1E"
-    visible: false
+    width: 360
+    color: "transparent" // "#1C1C1E"
+    visible: true
 
-    Behavior on visible { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+    mask: sidebarContent.x < 360 ? sidebarContent : null
+
+    property bool active: false
+
+    /* Rectangle {
+        anchors.fill: parent
+        color: "#1C1C1E"
+        radius: 30
+        antialiasing: true
+    } */
+
+    //Behavior on visible { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
 
     Process {
         id: wifiToggle
-        command: ["/bin/sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"] 
+        command: ["/bin/sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]
     }
 
     Process {
         id: btManager
-        command: ["blueman-manager"] 
+        command: ["blueman-manager"]
     }
 
     Process {
@@ -35,185 +48,38 @@ PanelWindow {
         command: ["nm-connection-editor"]
     }
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 16
-        spacing: 16
+    Process {
+        id: volumeSetter
+        function updateVol(val) {
+            if (running) terminate(); 
+            command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", val];
+            running = true;
+        }
+    }
 
-        // Notifications Card
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 450
-            radius: 28
-            color: "#2C2C2E"
+    Rectangle {
+        id: sidebarContent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: parent.width
+        color: "#1C1C1E"
+        radius: 30
+        x: sidebar.active ? 0 : sidebar.width
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 24
-                spacing: 16
-
-                Text {
-                    text: "Notifications"
-                    color: "#E6E1E5"
-                    font.pointSize: 22
-                    font.family: "sans-serif"
-                }
-
-                Rectangle {
-                    width: 80
-                    height: 32
-                    radius: 8
-                    color: clearMouse.pressed ? "#4A4A4C" : "#3A3A3C"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Clear"
-                        color: "#CAC4D0"
-                        font.pointSize: 10
-                    }
-
-                    MouseArea {
-                        id: clearMouse
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            const entries = notificationsService.trackedNotifications;
-                            for (var i = entries.length - 1; i >= 0; i--) {
-                                entries[i].dismiss();
-                            }
-                        }
-                    }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
-                }
-
-                ScrollView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    clip: true
-
-                    ListView {
-                        id: notifView
-                        model: notificationsService.trackedNotifications
-                        spacing: 12
-                        delegate: Rectangle {
-                            width: notifView.width
-                            height: 72
-                            radius: 12
-                            color: "#3A3A3C"
-
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.margins: 16
-                                spacing: 16
-                                Text { text: "◆"; color: "#CAC4D0"; font.pointSize: 24 }
-                                ColumnLayout {
-                                    spacing: 2
-                                    Text {
-                                        text: modelData.summary;
-                                        color: "#E6E1E5"; font.pointSize: 14;
-                                        font.weight: Font.Medium;
-                                        elide: Text.ElideRight;
-                                        Layout.fillWidth: true
-                                    }
-                                    Text {
-                                        text: modelData.body;
-                                        color: "#CAC4D0";
-                                        font.pointSize: 12;
-                                        elide: Text.ElideRight;
-                                        Layout.fillWidth: true 
-                                    }
-                                }
-                                Text {
-                                    text: "󰅖"
-                                    font.pointSize: 16
-                                    color: "#FFFFFF"
-                                    Layout.alignment: Qt.AlignTop
-                                    opacity: dismissMouse.containsMouse ? 1.0 : 0.3
-                                    Behavior on opacity { NumberAnimation { duration: 150 } }
-
-                                    MouseArea {
-                                        id: dismissMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: modelData.dismiss() 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        Behavior on x {
+            NumberAnimation {
+                duration: 500
+                easing.type: Easing.OutBack
+                easing.overshoot: 0.5
             }
         }
 
-        // Toggles Card
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            radius: 28
-            color: "#2C2C2E"
-
-            GridLayout {
-                anchors.fill: parent
-                anchors.margins: 24
-                columns: 2
-                rowSpacing: 16
-                columnSpacing: 16
-
-                // Wifi Button
-                Rectangle {
-                    id: wifiBtn
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 100
-                    radius: 20
-                    color: "#3A3A3C"
-                    //color: mouseArea.pressed ? "#4A4A4C" : "#3A3A3C"
-
-                    ColumnLayout {
-                        anchors.centerIn: parent
-                        Text {
-                            text: "󰖩";
-                            color: wifiToggle.running ? "#cba6f7" : "#E6E1E5";
-                            font.pointSize: 24; Layout.alignment: Qt.AlignCenter
-                        }
-                        Text { text: "WiFi"; color: "#CAC4D0"; font.pointSize: 11; Layout.alignment: Qt.AlignCenter }
-                    }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: wifiToggle.running = true
-                        // Right-click to open network manager
-                        onPressAndHold: wifiManager.running = true
-                    }
-                }
-
-                // Bluetooth Button
-                Rectangle {
-                    id: btBtn
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 100
-                    radius: 20
-                    color: "#3A3A3C"
-
-                    ColumnLayout {
-                        anchors.centerIn: parent
-                        Text { text: "󰂯"; color: "#E6E1E5"; font.pointSize: 24; Layout.alignment: Qt.AlignCenter }
-                        Text { text: "BT"; color: "#CAC4D0"; font.pointSize: 11; Layout.alignment: Qt.AlignCenter }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: btManager.running = true
-                    }
-                }
-            }
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 16
+            spacing: 16
+            NotificationList { id: notifCard }
+            QuickSettings { id: settingsCard }
         }
     }
 }

@@ -15,14 +15,14 @@ ShellRoot {
         keepOnReload: true;
         onNotification: (n) => {
             n.tracked = true
-            console.log("Summary: " + notification.summary)
-            console.log("Body: " + notification.body)
+            console.log("Summary: " + n.summary)
+            console.log("Body: " + n.body)
         }
     }
 
     GlobalShortcut {
         name: "toggle-sidebar"
         description: "Toggle right sidebar"
-        onPressed: { rightSidebar.visible = !rightSidebar.visible }
+        onPressed: { rightSidebar.active = !rightSidebar.active }
     }
 }

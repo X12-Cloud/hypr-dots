@@ -11,7 +11,7 @@ ShellRoot {
     RS.RightSidebar { id: rightSidebar }
 
     NotificationServer {
-        id: notificationsService; 
+        id: notificationsService;
         keepOnReload: true;
         onNotification: (n) => {
             n.tracked = true

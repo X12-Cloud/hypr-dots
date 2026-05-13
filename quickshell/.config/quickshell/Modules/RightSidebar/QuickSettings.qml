@@ -9,6 +9,8 @@ Rectangle {
     radius: 28
     color: "#2C2C2E"
 
+    Procs { id: localProcs }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20
@@ -26,6 +28,7 @@ Rectangle {
                 property string label: ""
                 property bool isActive: false
                 property var onTrigger: null
+                property var onLongPress: null
 
                 Layout.fillWidth: true
                 Layout.preferredHeight: 85
@@ -56,21 +59,36 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
+                    Timer {
+                        id: longPressTimer
+                        interval: 500
+                        onTriggered: {
+                            if (parent.pressed && parent.parent.onLongPress) {
+                                parent.parent.onLongPress()
+                            }
+                        }
+                    }
+
+                    onPressed: longPressTimer.start()
+                    onReleased: {
+                        longPressTimer.stop()
+                        if (!longPressTimer.running && !parent.pressed) return;
+                    }
                     onClicked: if (parent.onTrigger) parent.onTrigger()
                 }
             }
 
             ToggleButton {
-                icon: "󰖩"
-                label: "WiFi" // TODO: make it show the curent network ur connected to
-                isActive: wifiToggle.running
-                onTrigger: () => { wifiToggle.running = true }
+                icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
+                label: localProcs.currentSsid // "WiFi" // TODO: make it show the curent network ur connected to
+                onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
+                onLongPress: () => { localProcs.run(localProcs.wifiManager) }
             }
 
             ToggleButton {
                 icon: "󰂯"
                 label: "BT"
-                onTrigger: () => { btManager.running = true }
+                onTrigger: () => { localProcs.run(localProcs.btManager) }
             }
         }
 
@@ -79,16 +97,17 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 12
 
-            RowLayout {
-                Text { text: "󰕾"; color: "#D6BEFA"; font.pointSize: 18 }
-                Text { text: "Volume"; color: "#E6E1E5"; font.pointSize: 12; font.weight: Font.DemiBold }
-                Item { Layout.fillWidth: true }
-                Text { text: Math.round(volSlider.value * 100) + "%"; color: "#CAC4D0"; font.pointSize: 11 }
+            RowLayout { // This keeps it at the bottom
+                //Text { text: "󰕾"; color: "#D6BEFA"; font.pointSize: 18 }
+                //Text { text: "Volume"; color: "#E6E1E5"; font.pointSize: 12; font.weight: Font.DemiBold }
+                //Item { Layout.fillWidth: true }
+                //Text { text: Math.round(volSlider.value * 100) + "%"; color: "#CAC4D0"; font.pointSize: 11 }
             }
 
             Slider {
                 id: volSlider
                 Layout.fillWidth: true
+                Layout.preferredHeight: 36
                 from: 0
                 to: 1
                 value: 0.5 // TODO: fetch initial volume with a process on start
@@ -97,10 +116,10 @@ Rectangle {
                     x: volSlider.leftPadding
                     y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
                     implicitWidth: 200
-                    implicitHeight: 12
+                    implicitHeight: parent.height
                     width: volSlider.availableWidth
                     height: implicitHeight
-                    radius: 6
+                    radius: 12
                     color: "#3A3A3C"
 
                     Rectangle {
@@ -109,16 +128,39 @@ Rectangle {
                         color: "#D6BEFA"
                         radius: 6
                     }
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        spacing: 0
+                        Text {
+                            id: volIcon
+                            text: volSlider.value > 0 ? "󰕾" : "󰝟"
+                            font.pointSize: 16
+                            anchors.left: parent.left
+                            anchors.leftMargin: 16
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : "#E6E1E5"
+                            z: 2
+                        }
+                        Item { Layout.fillWidth: true }
+                        Text {
+                            text: Math.round(volSlider.value * 100) + "%"
+                            color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : "#CAC4D0"
+                            font.pointSize: 11
+                        }
+                    }
                 }
+
 
                 handle: Rectangle {
                     x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)
                     y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 20
-                    implicitHeight: 20
+                    implicitWidth: 10
+                    implicitHeight: 50
                     radius: 10
-                    color: volSlider.pressed ? "#FFFFFF" : "#E6E1E5"
-                    border.color: "#D6BEFA"
+                    color: "#D6BEFA"
+                    border.color: volSlider.pressed ? "#FFFFFF" : "#E6E1E5"
                     border.width: 2
 
                     Behavior on scale { NumberAnimation { duration: 100 } }
@@ -127,7 +169,7 @@ Rectangle {
 
                 onValueChanged: {
                     if (pressed) {
-                        volumeSetter.updateVol(value.toFixed(2))
+                        localProcs.volumeSetter.updateVol(value.toFixed(2))
                     }
                 }
             }

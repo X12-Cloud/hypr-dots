@@ -20,42 +20,9 @@ PanelWindow {
     color: "transparent" // "#1C1C1E"
     visible: true
 
-    mask: sidebarContent.x < 360 ? sidebarContent : null
+    //mask: sidebarContent.x < 360 ? sidebarContent : null
 
     property bool active: false
-
-    /* Rectangle {
-        anchors.fill: parent
-        color: "#1C1C1E"
-        radius: 30
-        antialiasing: true
-    } */
-
-    //Behavior on visible { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
-
-    Process {
-        id: wifiToggle
-        command: ["/bin/sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]
-    }
-
-    Process {
-        id: btManager
-        command: ["blueman-manager"]
-    }
-
-    Process {
-        id: wifiManager
-        command: ["nm-connection-editor"]
-    }
-
-    Process {
-        id: volumeSetter
-        function updateVol(val) {
-            if (running) terminate(); 
-            command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", val];
-            running = true;
-        }
-    }
 
     Rectangle {
         id: sidebarContent

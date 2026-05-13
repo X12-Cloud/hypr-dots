@@ -80,28 +80,28 @@ Rectangle {
 
             ToggleButton {
                 icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
-                label: localProcs.currentSsid // "WiFi" // TODO: make it show the curent network ur connected to
+                label: localProcs.currentSsid // "WiFi"
+                isActive: localProcs.currentSsid !== "Disconnected"
                 onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
                 onLongPress: () => { localProcs.run(localProcs.wifiManager) }
             }
 
             ToggleButton {
                 icon: "󰂯"
-                label: "BT"
+                label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "BT"
+                isActive: localProcs.currentBtDevice !== "Disconnected"
                 onTrigger: () => { localProcs.run(localProcs.btManager) }
             }
         }
+
+        MediaPlayer { id: mediaPlayer }
 
         // Volume control
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 12
 
-            RowLayout { // This keeps it at the bottom
-                //Text { text: "󰕾"; color: "#D6BEFA"; font.pointSize: 18 }
-                //Text { text: "Volume"; color: "#E6E1E5"; font.pointSize: 12; font.weight: Font.DemiBold }
-                //Item { Layout.fillWidth: true }
-                //Text { text: Math.round(volSlider.value * 100) + "%"; color: "#CAC4D0"; font.pointSize: 11 }
+            RowLayout { // This keeps it at the bottom 
             }
 
             Slider {
@@ -110,7 +110,7 @@ Rectangle {
                 Layout.preferredHeight: 36
                 from: 0
                 to: 1
-                value: 0.5 // TODO: fetch initial volume with a process on start
+                value: localProcs.currentVolume
 
                 background: Rectangle {
                     x: volSlider.leftPadding

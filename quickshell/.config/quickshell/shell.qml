@@ -23,6 +23,7 @@ ShellRoot {
     GlobalShortcut {
         name: "toggle-sidebar"
         description: "Toggle right sidebar"
+        //keybind: "Super+N"
         onPressed: { rightSidebar.active = !rightSidebar.active }
     }
 }

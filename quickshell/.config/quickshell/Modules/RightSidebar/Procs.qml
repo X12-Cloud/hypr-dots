@@ -21,9 +21,7 @@ Item {
     property alias mediaToggle: mediaToggle
     property alias mediaPrev: mediaPrev
 
-
     function run(proc) {
-        //if (proc.running) proc.kill();
         proc.running = false;
         proc.running = true;
     }
@@ -126,6 +124,7 @@ Item {
             getBtDevice.running = true
             getMetadata.running = true
             getVol.running = true
+            // console.log("Current Art URL: " + trackArt + "- Current track name: " + procs.trackTitle) // Debug log.
         }
         triggeredOnStart: true
     }

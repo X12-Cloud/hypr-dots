@@ -137,9 +137,8 @@ Rectangle {
                             id: volIcon
                             text: volSlider.value > 0 ? "󰕾" : "󰝟"
                             font.pointSize: 16
-                            anchors.left: parent.left
-                            anchors.leftMargin: 16
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                            Layout.leftMargin: 16
                             color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : "#E6E1E5"
                             z: 2
                         }

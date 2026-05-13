@@ -20,11 +20,21 @@ Rectangle {
         Image {
             id: bgArt
             anchors.fill: parent
-            source: localProcs.trackArt
+            source: {
+                if (localProcs.trackArt === "") return "images/default_art.jpg";
+                if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
+                return localProcs.trackArt;
+            }
             fillMode: Image.PreserveAspectCrop
             opacity: 0.25
             asynchronous: true
-            layer.enabled: true
+            cache: false
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Image Error: " + source + " | Status: " + status)
+                }
+            }
         }
 
         Rectangle {

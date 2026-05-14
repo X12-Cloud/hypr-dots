@@ -8,6 +8,8 @@ Rectangle {
     radius: 28
     color: "#2C2C2E"
 
+    Procs { id: localProcs }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 24
@@ -100,7 +102,6 @@ Rectangle {
                             }
                         }
 
-                        // Text { text: "◆"; color: "#CAC4D0"; font.pointSize: 24 }
                         ColumnLayout {
                             spacing: 2
                             Text {

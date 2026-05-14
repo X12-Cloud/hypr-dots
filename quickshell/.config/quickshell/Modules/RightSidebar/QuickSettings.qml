@@ -13,97 +13,13 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 24
-
-        GridLayout {
-            columns: 2
-            rowSpacing: 12
-            columnSpacing: 12
-            Layout.fillWidth: true
-
-            // Shared component for buttons to avoid repetition
-            component ToggleButton : Rectangle {
-                property string icon: ""
-                property string label: ""
-                property bool isActive: false
-                property var onTrigger: null
-                property var onLongPress: null
-
-                Layout.fillWidth: true
-                Layout.preferredHeight: 85
-                radius: 20
-                color: mouse.containsMouse ? "#4A4A4C" : "#3A3A3C"
-                Behavior on color { ColorAnimation { duration: 150 } }
-
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 4
-                    Text {
-                        text: parent.parent.icon
-                        color: parent.parent.isActive ? "#D6BEFA" : "#E6E1E5"
-                        font.pointSize: 22
-                        Layout.alignment: Qt.AlignCenter 
-                    }
-                    Text {
-                        text: parent.parent.label
-                        color: "#CAC4D0"
-                        font.pointSize: 10
-                        font.weight: Font.Medium
-                        Layout.alignment: Qt.AlignCenter 
-                    }
-                }
-
-                MouseArea {
-                    id: mouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    Timer {
-                        id: longPressTimer
-                        interval: 500
-                        onTriggered: {
-                            if (parent.pressed && parent.parent.onLongPress) {
-                                parent.parent.onLongPress()
-                            }
-                        }
-                    }
-
-                    onPressed: longPressTimer.start()
-                    onReleased: {
-                        longPressTimer.stop()
-                        if (!longPressTimer.running && !parent.pressed) return;
-                    }
-                    onClicked: if (parent.onTrigger) parent.onTrigger()
-                }
-            }
-
-            ToggleButton {
-                icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
-                label: localProcs.currentSsid // "WiFi"
-                isActive: localProcs.currentSsid !== "Disconnected"
-                onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
-                onLongPress: () => { localProcs.run(localProcs.wifiManager) }
-            }
-
-            ToggleButton {
-                icon: "󰂯"
-                label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "BT"
-                isActive: localProcs.currentBtDevice !== "Disconnected"
-                onTrigger: () => { localProcs.run(localProcs.btManager) }
-            }
-        }
-
-        MediaPlayer { id: mediaPlayer }
+        anchors.margins: 10
+        spacing: 8
 
         // Volume control
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 12
-
-            RowLayout { // This keeps it at the bottom 
-            }
-
+            spacing: 6
             Slider {
                 id: volSlider
                 Layout.fillWidth: true
@@ -173,5 +89,132 @@ Rectangle {
                 }
             }
         }
+
+        component WidePillButton : Rectangle {
+            property string icon: ""
+            property string title: ""
+            property string label: ""
+            property bool isActive: false
+            property var onTrigger: null
+            property var onLongPress: null
+
+            Layout.fillWidth: true
+            Layout.preferredHeight: 60
+            radius: 20
+            color: isActive ? "#D6BEFA" : (mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C")
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 14
+                spacing: 10
+
+                Text {
+                    font.family: "Font Awesome 6 Free"
+                    text: parent.parent.icon
+                    color: parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                    font.pointSize: 18
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                ColumnLayout {
+                    spacing: 0
+                    Layout.alignment: Qt.AlignVCenter
+                    Text {
+                        text: parent.parent.parent.title
+                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                        font.pointSize: 9
+                        font.weight: Font.Bold
+                    }
+                    Text {
+                        text: parent.parent.parent.label
+                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#CAC4D0"
+                        font.pointSize: 7.5
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+                }
+            }
+
+            MouseArea {
+                id: mouseWide; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                Timer {
+                    id: lpTimerWide; interval: 500
+                    onTriggered: { if (parent.pressed && parent.parent.onLongPress) parent.parent.onLongPress() }
+                }
+                onPressed: lpTimerWide.start()
+                onReleased: lpTimerWide.stop()
+                onClicked: if (parent.onTrigger) parent.onTrigger()
+            }
+        }
+
+        component SquareButton : Rectangle {
+            property string icon: ""
+            property bool isActive: false
+            property var onTrigger: null
+
+            Layout.preferredWidth: 60
+            Layout.preferredHeight: 60
+            radius: 20
+            color: isActive ? "#D6BEFA" : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: parent.icon
+                color: parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                font.pointSize: 18
+            }
+
+            MouseArea {
+                id: mouseSquare; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: if (parent.onTrigger) parent.onTrigger()
+            }
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 12
+
+            WidePillButton {
+                icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
+                title: "Network"
+                label: localProcs.currentSsid
+                isActive: localProcs.currentSsid !== "No WiFi" && localProcs.currentSsid !== "Disconnected"
+                onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
+                onLongPress: () => { localProcs.run(localProcs.wifiManager) }
+            }
+
+            WidePillButton {
+                icon: "󰂯"
+                title: "Bluetooth"
+                label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "Not connected"
+                isActive: localProcs.currentBtDevice !== "Disconnected"
+                onTrigger: () => { localProcs.run(localProcs.btManager) }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 12
+
+            WidePillButton {
+                icon: "󰓃"
+                title: "EasyEffects"
+                label: "Active"
+                isActive: true
+            }
+            SquareButton {
+                icon: localProcs.isNightLightActive ? "󰖔" : "󰖙"
+                isActive: localProcs.isNightLightActive
+                onTrigger: () => { localProcs.run(localProcs.nightLightToggle) }
+            }
+            SquareButton {
+                icon: localProcs.isDndActive ? "󰂛" : "󰂚"
+                isActive: localProcs.isDndActive
+                onTrigger: () => { localProcs.run(localProcs.dndToggle) }
+            }
+        }
+
+        MediaPlayer { id: mediaPlayer }
     }
 }

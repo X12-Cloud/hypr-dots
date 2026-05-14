@@ -1,0 +1,173 @@
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Quickshell.Io
+
+Rectangle {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    radius: 28
+    color: "#2C2C2E"
+
+    Procs { id: localProcs }
+
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 20
+        spacing: 24
+
+        // Volume control
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 12
+            Slider {
+                id: volSlider
+                Layout.fillWidth: true
+                Layout.preferredHeight: 36
+                from: 0
+                to: 1
+                value: localProcs.currentVolume
+
+                background: Rectangle {
+                    x: volSlider.leftPadding
+                    y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
+                    implicitWidth: 200
+                    implicitHeight: parent.height
+                    width: volSlider.availableWidth
+                    height: implicitHeight
+                    radius: 12
+                    color: "#3A3A3C"
+
+                    Rectangle {
+                        width: volSlider.visualPosition * parent.width
+                        height: parent.height
+                        color: "#D6BEFA"
+                        radius: 6
+                    }
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        spacing: 0
+                        Text {
+                            id: volIcon
+                            text: volSlider.value > 0 ? "󰕾" : "󰝟"
+                            font.pointSize: 16
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                            Layout.leftMargin: 16
+                            color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : "#E6E1E5"
+                            z: 2
+                        }
+                        Item { Layout.fillWidth: true }
+                        Text {
+                            text: Math.round(volSlider.value * 100) + "%"
+                            color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : "#CAC4D0"
+                            font.pointSize: 11
+                        }
+                    }
+                }
+
+
+                handle: Rectangle {
+                    x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)
+                    y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
+                    implicitWidth: 10
+                    implicitHeight: 50
+                    radius: 10
+                    color: "#D6BEFA"
+                    border.color: volSlider.pressed ? "#FFFFFF" : "#E6E1E5"
+                    border.width: 2
+
+                    Behavior on scale { NumberAnimation { duration: 100 } }
+                    scale: volSlider.hovered ? 1.2 : 1.0
+                }
+
+                onValueChanged: {
+                    if (pressed) {
+                        localProcs.volumeSetter.updateVol(value.toFixed(2))
+                    }
+                }
+            }
+        }
+
+        GridLayout {
+            columns: 2
+            rowSpacing: 12
+            columnSpacing: 12
+            Layout.fillWidth: true
+
+            // Shared component for buttons to avoid repetition
+            component ToggleButton : Rectangle {
+                property string icon: ""
+                property string label: ""
+                property bool isActive: false
+                property var onTrigger: null
+                property var onLongPress: null
+
+                Layout.fillWidth: true
+                Layout.preferredHeight: 85
+                radius: 20
+                color: mouse.containsMouse ? "#4A4A4C" : "#3A3A3C"
+                Behavior on color { ColorAnimation { duration: 150 } }
+
+                ColumnLayout {
+                    anchors.centerIn: parent
+                    spacing: 4
+                    Text {
+                        text: parent.parent.icon
+                        color: parent.parent.isActive ? "#D6BEFA" : "#E6E1E5"
+                        font.pointSize: 22
+                        Layout.alignment: Qt.AlignCenter 
+                    }
+                    Text {
+                        text: parent.parent.label
+                        color: "#CAC4D0"
+                        font.pointSize: 10
+                        font.weight: Font.Medium
+                        Layout.alignment: Qt.AlignCenter 
+                    }
+                }
+
+                MouseArea {
+                    id: mouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    Timer {
+                        id: longPressTimer
+                        interval: 500
+                        onTriggered: {
+                            if (parent.pressed && parent.parent.onLongPress) {
+                                parent.parent.onLongPress()
+                            }
+                        }
+                    }
+
+                    onPressed: longPressTimer.start()
+                    onReleased: {
+                        longPressTimer.stop()
+                        if (!longPressTimer.running && !parent.pressed) return;
+                    }
+                    onClicked: if (parent.onTrigger) parent.onTrigger()
+                }
+            }
+
+            ToggleButton {
+                icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
+                label: localProcs.currentSsid // "WiFi"
+                isActive: localProcs.currentSsid !== "Disconnected"
+                onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
+                onLongPress: () => { localProcs.run(localProcs.wifiManager) }
+            }
+
+            ToggleButton {
+                icon: "󰂯"
+                label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "BT"
+                isActive: localProcs.currentBtDevice !== "Disconnected"
+                onTrigger: () => { localProcs.run(localProcs.btManager) }
+            }
+        }
+
+        MediaPlayer { id: mediaPlayer }
+    }
+}

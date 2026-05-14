@@ -16,13 +16,12 @@ PanelWindow {
     anchors.right: true
     anchors.top: true
     anchors.bottom: true
-    width: 360
-    color: "transparent" // "#1C1C1E"
+    width: 420
+    color: "transparent"
     visible: true
 
-    //mask: sidebarContent.x < 360 ? sidebarContent : null
-
     property bool active: false
+    Procs { id: localProcs }
 
     Rectangle {
         id: sidebarContent
@@ -43,10 +42,40 @@ PanelWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 16
-            NotificationList { id: notifCard }
-            QuickSettings { id: settingsCard }
+            anchors.margins: 12
+            spacing: 12
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 40
+                Layout.leftMargin: 8
+                Layout.topMargin: 8
+                spacing: 10
+                Text {
+                    font.family: "Font Awesome 6 Free" // "Material Symbols Rounded"
+                    text: "\uf17c"
+                    color: "#FFFFFF"
+                    font.pointSize: 14
+                    Layout.alignment: Qt.AlignVCenter
+                }
+                Text {
+                    text: localProcs.osName
+                    color: "#E6E1E5"
+                    font.pointSize: 12
+                    font.weight: Font.Bold
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                }
+            }
+            QuickSettings {
+                id: settingsCard
+                Layout.fillWidth: true
+                Layout.preferredHeight: sidebar.height * 0.35
+            }
+            NotificationList {
+                id: notifCard
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
         }
     }
 }

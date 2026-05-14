@@ -42,7 +42,7 @@ Rectangle {
                         width: volSlider.visualPosition * parent.width
                         height: parent.height
                         color: "#D6BEFA"
-                        radius: 6
+                        radius: 10
                     }
                     RowLayout {
                         anchors.fill: parent
@@ -185,7 +185,7 @@ Rectangle {
             }
 
             WidePillButton {
-                icon: "󰂯"
+                icon: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\ue1a7"
                 title: "Bluetooth"
                 label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "Not connected"
                 isActive: localProcs.currentBtDevice !== "Disconnected"
@@ -211,7 +211,10 @@ Rectangle {
             SquareButton {
                 icon: localProcs.isDndActive ? "󰂛" : "󰂚"
                 isActive: localProcs.isDndActive
-                onTrigger: () => { localProcs.run(localProcs.dndToggle) }
+                onTrigger: () => {
+                    localProcs.dndToggle()
+                    localProcs.run(localProcs.dndToggle)
+                }
             }
         }
 

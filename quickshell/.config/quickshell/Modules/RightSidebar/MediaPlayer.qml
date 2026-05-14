@@ -61,6 +61,17 @@ Rectangle {
         spacing: 8
 
         RowLayout {
+            Text {
+                text: formatTime(localProcs.trackPosUs)
+                color: "#CAC4D0"
+                font.pointSize: 9
+            }
+            Text { text: "/"; color: "#CAC4D0"}
+            Text {
+                text: formatTime(localProcs.trackLengthUs)
+                color: "#CAC4D0"
+                font.pointSize: 9
+            }
             Layout.fillWidth: true
             Item { Layout.fillWidth: true }
             Rectangle {
@@ -73,7 +84,7 @@ Rectangle {
                     spacing: 4
                     Text {
                         font.family: "Material Symbols Rounded" // "Font Awesome 6 Free"
-                        text: localProcs.currentBtDevice !== "Disconnected" ? "\uf293" : "\uf025"
+                        text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\uf01f"
                         //font.styleName: "Solid"
                         font.pointSize: 8
                         color: "#000000"

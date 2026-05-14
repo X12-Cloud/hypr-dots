@@ -1,0 +1,16 @@
+[global]
+max-visible=3
+default-timeout=5000
+layer=overlay
+anchor=top-right
+
+
+# Force-clear EVERYTHING
+[urgency=low]
+default-timeout=5000
+
+[urgency=normal]
+default-timeout=5000
+
+[urgency=high]
+default-timeout=10000

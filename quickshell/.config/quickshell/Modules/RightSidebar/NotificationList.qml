@@ -144,6 +144,11 @@ Rectangle {
             }
             ColumnLayout {
                 spacing: 12
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                Item { Layout.fillWidth: true }
+                Item { Layout.fillHeight: true }
 
                 Text {
                     Layout.alignment: Qt.AlignCenter
@@ -161,6 +166,8 @@ Rectangle {
                     color: "#4A4A4C"
                     opacity: 0.8
                 }
+
+                Item { Layout.fillHeight: true }
             }
         }
     }

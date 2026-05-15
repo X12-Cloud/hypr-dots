@@ -25,12 +25,13 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         radius: 20
-        color: "transparent"
+        color: "#2C2C2E"
         clip: true
 
         Image {
             id: bgArt
             anchors.fill: parent
+            anchors.margins: 4
             source: {
                 if (localProcs.trackArt === "") return "images/blackhole.jpg";
                 if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
@@ -83,9 +84,8 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 4
                     Text {
-                        font.family: "Material Symbols Rounded" // "Font Awesome 6 Free"
+                        font.family: "Material Symbols Rounded"
                         text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\uf01f"
-                        //font.styleName: "Solid"
                         font.pointSize: 8
                         color: "#000000"
                     }
@@ -129,8 +129,9 @@ Rectangle {
                 Behavior on scale { NumberAnimation { duration: 100 } }
                 Text {
                     anchors.centerIn: parent
-                    text: localProcs.isPlaying ? "󰏤" : "󰐊"
+                    text: localProcs.isPlaying ? "\ue034" : "\ue037"
                     font.pointSize: 22
+                    font.family: "Material Symbols Rounded"
                     color: "#000000"
                 }
                 MouseArea {
@@ -147,25 +148,12 @@ Rectangle {
             Rectangle {
                 width: 40; height: 40; radius: 20
                 color: prevMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
-                Text { anchors.centerIn: parent; text: "󰒮"; font.pointSize: 18; color: "white" }
+                Text { anchors.centerIn: parent; text: "\ue045"; font.pointSize: 18; color: "white"; font.family: "Material Symbols Rounded" }
                 MouseArea {
                     id: prevMouse; anchors.fill: parent; hoverEnabled: true
                     onClicked: localProcs.run(localProcs.mediaPrev)
                 }
             }
-            /* RowLayout {
-                Layout.fillWidth: true
-                Text {
-                    text: formatTime(localProcs.trackPosUs)
-                    color: "#CAC4D0"
-                    font.pointSize: 9
-                }
-                Text {
-                    text: formatTime(localProcs.trackLengthUs)
-                    color: "#CAC4D0"
-                    font.pointSize: 9
-                }
-            } */
             Slider {
                 id: trackProgress
                 Layout.fillWidth: true
@@ -195,8 +183,8 @@ Rectangle {
                 handle: Rectangle {
                     x: trackProgress.leftPadding + trackProgress.visualPosition * (trackProgress.availableWidth - width)
                     y: trackProgress.topPadding + trackProgress.availableHeight / 2 - height / 2
-                    implicitWidth: 10
-                    implicitHeight: 10
+                    implicitWidth: 5
+                    implicitHeight: 20
                     radius: 20
                     color: "#D6BEFA"
                     border.color: trackProgress.pressed ? "#FFFFFF" : "#E6E1E5"
@@ -209,7 +197,7 @@ Rectangle {
             Rectangle {
                 width: 40; height: 40; radius: 20
                 color: nextMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
-                Text { anchors.centerIn: parent; text: "󰒭"; font.pointSize: 18; color: "white" }
+                Text { anchors.centerIn: parent; text: "\ue044"; font.pointSize: 18; color: "white"; font.family: "Material Symbols Rounded" }
                 MouseArea {
                     id: nextMouse; anchors.fill: parent; hoverEnabled: true
                     onClicked: localProcs.run(localProcs.mediaNext)

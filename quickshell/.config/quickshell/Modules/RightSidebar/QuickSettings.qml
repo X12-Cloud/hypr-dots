@@ -51,8 +51,9 @@ Rectangle {
                         spacing: 0
                         Text {
                             id: volIcon
-                            text: volSlider.value > 0 ? "󰕾" : "󰝟"
+                            text: volSlider.value > 0 ? "\ue050" : "\ue04f" // "󰕾" : "󰝟"
                             font.pointSize: 16
+                            font.family: "Material Symbols Rounded"
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                             Layout.leftMargin: 16
                             color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : "#E6E1E5"
@@ -205,7 +206,7 @@ Rectangle {
                 isActive: true
             }
             SquareButton {
-                icon: localProcs.isNightLightActive ? "󰖔" : "\ue430"
+                icon: localProcs.isNightLightActive ? "\uf03d" : "\ue430"
                 isActive: localProcs.isNightLightActive
                 onTrigger: () => { localProcs.run(localProcs.nightLightToggle) }
             }

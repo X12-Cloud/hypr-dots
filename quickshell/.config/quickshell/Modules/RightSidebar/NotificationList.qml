@@ -135,7 +135,7 @@ Rectangle {
                                     anchors.fill: parent
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: modelData.dismiss() 
+                                    onClicked: modelData.dismiss()
                                 }
                             }
                         }
@@ -147,8 +147,9 @@ Rectangle {
 
                 Text {
                     Layout.alignment: Qt.AlignCenter
-                    text: localProcs.isDndActive ? "󰂈" : "󰂛"
+                    text: localProcs.isDndActive ? "\ueffb" : "\ue7f6"
                     font.pointSize: 48
+                    font.family: "Material Symbols Rounded"
                     color: "#4A4A4C"
                 }
 

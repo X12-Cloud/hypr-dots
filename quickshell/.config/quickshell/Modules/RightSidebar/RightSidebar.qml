@@ -18,7 +18,8 @@ PanelWindow {
     anchors.bottom: true
     width: 420
     color: "transparent"
-    visible: true
+    visible: active || sidebarContent.opacity > 0
+    mask: Region { item: sidebarContent }
 
     property bool active: false
     Procs { id: localProcs }
@@ -34,7 +35,7 @@ PanelWindow {
 
         Behavior on x {
             NumberAnimation {
-                duration: 500
+                duration: 400
                 easing.type: Easing.OutBack
                 easing.overshoot: 0.5
             }

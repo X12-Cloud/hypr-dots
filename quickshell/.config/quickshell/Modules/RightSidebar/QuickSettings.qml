@@ -110,7 +110,7 @@ Rectangle {
                 spacing: 10
 
                 Text {
-                    font.family: "Font Awesome 6 Free"
+                    font.family: "Material Symbols Rounded" // "Font Awesome 6 Free"
                     text: parent.parent.icon
                     color: parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
                     font.pointSize: 18
@@ -164,6 +164,7 @@ Rectangle {
                 text: parent.icon
                 color: parent.isActive ? "#2C2C2E" : "#E6E1E5"
                 font.pointSize: 18
+                font.family: "Material Symbols Rounded"
             }
 
             MouseArea {
@@ -176,7 +177,7 @@ Rectangle {
             spacing: 12
 
             WidePillButton {
-                icon: localProcs.currentSsid.includes("Wired") ? "󰈀" : "󰖩"
+                icon: localProcs.currentSsid.includes("Wired") ? "\ue8be" : "\ue63e" // "󰈀"
                 title: "Network"
                 label: localProcs.currentSsid
                 isActive: localProcs.currentSsid !== "No WiFi" && localProcs.currentSsid !== "Disconnected"
@@ -198,18 +199,18 @@ Rectangle {
             spacing: 12
 
             WidePillButton {
-                icon: "󰓃"
+                icon: "\ue32d"
                 title: "EasyEffects"
                 label: "Active"
                 isActive: true
             }
             SquareButton {
-                icon: localProcs.isNightLightActive ? "󰖔" : "󰖙"
+                icon: localProcs.isNightLightActive ? "󰖔" : "\ue430"
                 isActive: localProcs.isNightLightActive
                 onTrigger: () => { localProcs.run(localProcs.nightLightToggle) }
             }
             SquareButton {
-                icon: localProcs.isDndActive ? "󰂛" : "󰂚"
+                icon: localProcs.isDndActive ? "\ueffb" : "\ue643"
                 isActive: localProcs.isDndActive
                 onTrigger: () => {
                     localProcs.dndToggle()

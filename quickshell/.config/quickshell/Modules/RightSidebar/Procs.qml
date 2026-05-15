@@ -18,6 +18,10 @@ Item {
     property real currentVolume: 0.0
     property bool isDndActive: false
     property bool isNightLightActive: false
+    property real cpuUsage: 0.0
+    property real memUsage: 0.0
+    property real diskUsage: 0.0
+    property real cpuTemp: 0.0
 
     property alias volumeSetter: volumeSetter
     property alias wifiToggle: wifiToggle
@@ -30,6 +34,37 @@ Item {
     function run(proc) {
         proc.running = false;
         proc.running = true;
+    }
+
+    Process {
+        id: cpuPercentage
+        command: ["sh", "-c", "top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* id.*/\\1/\" | awk '{print 100 - $1}'"]
+        stdout: SplitParser {
+            onRead: (data) => { procs.cpuUsage = data }
+        }
+    }
+    Process {
+        id: ramPercentage
+        command: ["sh", "-c", "free | grep Mem | awk '{print $3/$2 * 100.0}'"]
+        stdout: SplitParser {
+            onRead: (data) => { procs.memUsage = parseFloat(data.trim()) || 0 }
+        }
+    }
+    Process {
+        id: diskPercentage
+        command: ["sh", "-c", "df / | awk 'NR==2 {print $5}' | sed 's/%//'"]
+        stdout: SplitParser {
+            onRead: (data) => { procs.diskUsage = parseFloat(data.trim()) || 0 }
+        }
+    }
+    Process {
+        id: cpuTemperature
+        // This command tries common paths for AMD/Intel.
+        // If it returns 0, try: "cat /sys/class/thermal/thermal_zone0/temp"
+        command: ["sh", "-c", "cat /sys/class/hwmon/hwmon*/temp1_input | awk '{print $1/1000}'"]
+        stdout: SplitParser {
+            onRead: (data) => { procs.cpuTemp = parseFloat(data.trim()) || 0 }
+        }
     }
 
     Process {
@@ -193,6 +228,11 @@ Item {
             getVol.running = true
             checkNightLight.running = true
             checkDnd.running = true
+
+            cpuPercentage.running = true
+            ramPercentage.running = true
+            diskPercentage.running = true
+            cpuTemperature.running = true
         }
         triggeredOnStart: true
     }

@@ -1,12 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Notifications/"
 
 Rectangle {
+    id: root
     Layout.fillWidth: true
     Layout.preferredHeight: 400
     radius: 28
     color: "#2C2C2E"
+    property bool showUtils: false
 
     Procs { id: localProcs }
 
@@ -19,7 +22,7 @@ Rectangle {
         spacing: 16
 
         RowLayout {
-            Text { text: "Notifications"; color: "#E6E1E5"; font.pointSize: 20; font.family: "sans-serif" }
+            Text { text: root.showUtils ? "System Utils" : "Notifications"; color: "#E6E1E5"; font.pointSize: 20; font.family: "sans-serif" }
             Item { Layout.fillWidth: true }
             Rectangle {
                 id: clearBtn
@@ -29,6 +32,7 @@ Rectangle {
                 color: clearMouse.pressed ? "#4A4A4C" : (clearMouse.containsMouse ? "#3A3A3C" : "#2C2C2E")
                 border.color: "#3A3A3C"
                 border.width: 1
+                visible: !showUtils
 
                 Text {
                     anchors.centerIn: parent
@@ -53,12 +57,28 @@ Rectangle {
 
                 Behavior on color { ColorAnimation { duration: 150 } }
             }
+
+            Rectangle {
+                width: 40; height: 32; radius: 12; color: switchMouse.pressed ? "#4A4A4C" : (switchMouse.containsMouse ? "#3A3A3C" : "#2C2C2E"); border.color: "#3A3A3C"; border.width: 1
+                Text {
+                    anchors.centerIn: parent
+                    text: root.showUtils ? "󰵅" : "󰻠" // Switch icons
+                    color: switchMouse.containsMouse ? "#D6BEFA" : "#CAC4D0"
+                }
+                MouseArea {
+                    id: switchMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.showUtils = !root.showUtils
+                }
+            }
         }
 
         StackLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: notifView.count > 0 ? 0 : 1
+            currentIndex: showUtils ? 2 : (notifView.count > 0 ? 0 : 1)
             ScrollView {
                 clip: true
                 ListView {
@@ -169,6 +189,7 @@ Rectangle {
 
                 Item { Layout.fillHeight: true }
             }
+            UtilsCard {}
         }
     }
 }

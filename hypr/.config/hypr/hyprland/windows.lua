@@ -27,3 +27,12 @@ hl.window_rule({
 	match = { class = "^(discord)$" },
 	opacity = "0.80 override 0.75 override",
 })
+
+-- Satty for screenshots
+hl.window_rule({
+	match = { class = "^(com.gabm.satty)$" },
+	float = true,
+	size = "900 600",
+	center = true,
+	pin = true,
+})

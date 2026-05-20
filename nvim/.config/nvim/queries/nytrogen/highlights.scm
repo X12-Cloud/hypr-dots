@@ -18,5 +18,15 @@
 (function_definition (identifier) @function)
 (call_expression (identifier) @function)
 
+;; Preprocessor Directives
+(preproc_include) @keyword.directive
+(preproc_define) @keyword.directive
+(preproc_ifndef) @keyword.directive
+(preproc_endif) @keyword.directive
+
+(preproc_ifndef name: (identifier) @constant)
+(preproc_define name: (identifier) @constant)
+(preproc_include path: (string) @string)
+
 ;; Comments
 (comment) @comment

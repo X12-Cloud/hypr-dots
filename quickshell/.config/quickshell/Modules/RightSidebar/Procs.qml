@@ -1,4 +1,5 @@
 import QtQuick
+import QtQml
 import Quickshell
 import Quickshell.Io
 
@@ -36,11 +37,28 @@ Item {
         proc.running = true;
     }
 
+    function dndToggle() {
+        procs.isDndActive = !procs.isDndActive
+        run(dndToggleProcess)
+    }
+    function execNLToggle() {
+        procs.isNightLightActive = !procs.isNightLightActive
+
+        if (procs.isNightLightActive) {
+            nightLightToggle.command = ["hyprctl", "keyword", "decoration:screen_shader", "/home/x12/.config/hypr/shaders/blue-light.glsl"];
+        } else {
+            nightLightToggle.command = ["hyprctl", "keyword", "decoration:screen_shader", "[[EMPTY]]"];
+        }
+
+        nightLightToggle.running = false;
+        nightLightToggle.running = true;
+    }
+
     Process {
         id: cpuPercentage
         command: ["sh", "-c", "top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* id.*/\\1/\" | awk '{print 100 - $1}'"]
         stdout: SplitParser {
-            onRead: (data) => { procs.cpuUsage = data }
+            onRead: (data) => { procs.cpuUsage = parseFloat(data.trim()) || 0 }
         }
     }
     Process {
@@ -59,8 +77,6 @@ Item {
     }
     Process {
         id: cpuTemperature
-        // This command tries common paths for AMD/Intel.
-        // If it returns 0, try: "cat /sys/class/thermal/thermal_zone0/temp"
         command: ["sh", "-c", "cat /sys/class/hwmon/hwmon*/temp1_input | awk '{print $1/1000}'"]
         stdout: SplitParser {
             onRead: (data) => { procs.cpuTemp = parseFloat(data.trim()) || 0 }
@@ -78,17 +94,11 @@ Item {
         }
     }
 
-    function dndToggle() {
-        procs.isDndActive = !procs.isDndActive
+    Process {
+        id: dndToggleProcess
+        command: ["sh", "-c", "makoctl mode | grep -q 'dnd' && makoctl mode -r dnd || makoctl mode -a dnd"]
     }
 
-    Process {
-        id: dndToggle
-        command: ["sh", "-c", "makoctl mode | grep -q 'dnd' && makoctl mode -r dnd || makoctl mode -a dnd"]
-        onStarted: {
-            procs.isDndActive = !procs.isDndActive
-        }
-    }
     Process {
         id: checkDnd
         command: ["sh", "-c", "makoctl mode"]
@@ -99,15 +109,18 @@ Item {
 
     Process {
         id: nightLightToggle
-        command: ["sh", "-c", "pkill gammastep || gammastep -O 3500 &"]
     }
-    Process {
+
+    /* Process {
         id: checkNightLight
-        command: ["sh", "-c", "pgrep gammastep"]
+        command: ["hyprctl", "decoration:screen_shader"]
         stdout: SplitParser {
-            onRead: (data) => { procs.isNightLightActive = data.trim().length > 0 }
+            onRead: (data) => {
+                let cleanData = data.trim();
+                procs.isNightLightActive = (cleanData.length > 0 && !cleanData.includes("EMPTY"));
+            }
         }
-    }
+    } */
 
     // WiFi/BT Fetchers
     Process {
@@ -178,7 +191,7 @@ Item {
         command: ["playerctl", "previous"]
     }
 
-    // Metadata Fetcher (Hard-Syncs raw values every 2 seconds)
+    // Metadata Fetcher
     Process {
         id: getMetadata
         command: ["playerctl", "metadata", "--format", "{{title}}||{{artist}}||{{status}}||{{mpris:artUrl}}||{{position}}||{{mpris:length}}"]
@@ -203,7 +216,7 @@ Item {
         }
     }
 
-    Timer { // 10hz timer for media player progress bar
+    Timer {
         id: progressTimer
         interval: 100
         running: procs.isPlaying
@@ -218,7 +231,7 @@ Item {
         }
     }
 
-    // Update every 2 seconds
+    // Update loop
     Timer {
         interval: 2000; running: true; repeat: true
         onTriggered: {
@@ -226,7 +239,6 @@ Item {
             getBtDevice.running = true
             getMetadata.running = true
             getVol.running = true
-            checkNightLight.running = true
             checkDnd.running = true
 
             cpuPercentage.running = true

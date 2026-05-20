@@ -208,14 +208,15 @@ Rectangle {
             SquareButton {
                 icon: localProcs.isNightLightActive ? "\uf03d" : "\ue430"
                 isActive: localProcs.isNightLightActive
-                onTrigger: () => { localProcs.run(localProcs.nightLightToggle) }
+                onTrigger: () => {
+                    localProcs.execNLToggle()
+                }
             }
             SquareButton {
                 icon: localProcs.isDndActive ? "\ueffb" : "\ue643"
                 isActive: localProcs.isDndActive
                 onTrigger: () => {
                     localProcs.dndToggle()
-                    localProcs.run(localProcs.dndToggle)
                 }
             }
         }

@@ -4,6 +4,14 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
+-- Register file extensions to the 'nytrogen' filetype group
+vim.filetype.add {
+  extension = {
+    ny = 'nytrogen',
+    nyt = 'nytrogen',
+  },
+}
+
 -- Keymaps
 local hex_mode = false
 vim.keymap.set('n', '<leader>hx', function()
@@ -35,8 +43,9 @@ parser_config.nytrogen = {
     url = '~/dev/tree-sitter-nytrogen',
     files = { 'src/parser.c' },
     branch = 'main',
+    generate_requires_npm = false,
   },
-  filetype = 'ny',
+  filetype = 'nytrogen',
 }
 
 -- Plugins

@@ -9,6 +9,7 @@ Item {
     property string osName: "Unknown OS"
     property string currentSsid: "Disconnected"
     property string currentBtDevice: "Disconnected"
+    property string currentSinkName: "Detecting Audio..."
     property string trackTitle: "Nothing Playing"
     property string trackArtist: "Unknown Artist"
     property bool isPlaying: false
@@ -19,6 +20,7 @@ Item {
     property real currentVolume: 0.0
     property bool isDndActive: false
     property bool isNightLightActive: false
+    property bool keepSysAwake: false
     property real cpuUsage: 0.0
     property real memUsage: 0.0
     property real diskUsage: 0.0
@@ -52,6 +54,9 @@ Item {
 
         nightLightToggle.running = false;
         nightLightToggle.running = true;
+    }
+    function toggleSystemAwake() {
+        run(awakeToggle);
     }
 
     Process {
@@ -98,6 +103,11 @@ Item {
         id: dndToggleProcess
         command: ["sh", "-c", "makoctl mode | grep -q 'dnd' && makoctl mode -r dnd || makoctl mode -a dnd"]
     }
+    Process { id: nightLightToggle }
+    Process {
+        id: awakeToggle
+        command: ["sh", "-c", "pgrep -f 'Manual panel block' && pkill -f 'Manual panel block' || systemd-inhibit --why='Manual panel block' --what=idle sleep infinity &"]
+    }
 
     Process {
         id: checkDnd
@@ -106,21 +116,15 @@ Item {
             onRead: (data) => { procs.isDndActive = data.includes("dnd") }
         }
     }
-
     Process {
-        id: nightLightToggle
-    }
-
-    /* Process {
-        id: checkNightLight
-        command: ["hyprctl", "decoration:screen_shader"]
+        id: checkAwakeStatus
+        command: ["sh", "-c", "systemd-inhibit --list --no-pager | grep -q 'Manual panel block' && echo 'true' || echo 'false'"]
         stdout: SplitParser {
             onRead: (data) => {
-                let cleanData = data.trim();
-                procs.isNightLightActive = (cleanData.length > 0 && !cleanData.includes("EMPTY"));
+                procs.keepSysAwake = (data.trim() === "true");
             }
         }
-    } */
+    }
 
     // WiFi/BT Fetchers
     Process {
@@ -141,6 +145,18 @@ Item {
             onRead: (data) => {
                 let name = data.trim();
                 procs.currentBtDevice = name.length > 0 ? name : "Disconnected";
+            }
+        }
+    }
+
+    // Current sound device
+    Process {
+        id: getSoundDevice
+        command: ["sh", "-c", "wpctl status | grep -A 20 'Sinks:' | grep '*' | awk -F'.' '{print $2}' | sed -E 's/^[[:space:]]+[0-9]+ //; s/[[:space:]]+(\\[vol:.*\\]|\\[MUTED\\])//g' | tr -d '\\n'"]
+        stdout: SplitParser {
+            onRead: (data) => {
+                let cleanName = data.trim();
+                procs.currentSinkName = cleanName.length > 0 ? cleanName : "Default Sink";
             }
         }
     }
@@ -240,6 +256,8 @@ Item {
             getMetadata.running = true
             getVol.running = true
             checkDnd.running = true
+            checkAwakeStatus.running = true
+            getSoundDevice.running = true
 
             cpuPercentage.running = true
             ramPercentage.running = true

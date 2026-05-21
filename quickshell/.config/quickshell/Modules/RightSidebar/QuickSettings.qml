@@ -185,13 +185,19 @@ Rectangle {
                 onTrigger: () => { localProcs.run(localProcs.wifiToggle) }
                 onLongPress: () => { localProcs.run(localProcs.wifiManager) }
             }
-
             WidePillButton {
                 icon: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\ue1a7"
                 title: "Bluetooth"
                 label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "Not connected"
                 isActive: localProcs.currentBtDevice !== "Disconnected"
                 onTrigger: () => { localProcs.run(localProcs.btManager) }
+            }
+            SquareButton {
+                icon: "\uefef"
+                isActive: localProcs.keepSysAwake
+                onTrigger: () => {
+                    localProcs.toggleSystemAwake()
+                }
             }
         }
 
@@ -200,9 +206,9 @@ Rectangle {
             spacing: 12
 
             WidePillButton {
-                icon: "\ue32d"
-                title: "EasyEffects"
-                label: "Active"
+                icon: "\uf003"
+                title: "Sound Devices"
+                label: localProcs.currentSinkName
                 isActive: true
             }
             SquareButton {

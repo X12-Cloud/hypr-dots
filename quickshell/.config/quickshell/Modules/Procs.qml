@@ -137,6 +137,11 @@ Item {
         }
     }
 
+    Process {
+        id: powerMenu
+        command: ["sh", "-c", "wlogout -b 3 &"]
+    }
+
     // WiFi/BT Fetchers
     Process {
         id: getSsid

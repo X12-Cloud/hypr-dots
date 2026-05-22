@@ -17,7 +17,6 @@ Rectangle {
         anchors.margins: 10
         spacing: 8
 
-        // Volume control
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 6
@@ -52,7 +51,7 @@ Rectangle {
                         spacing: 0
                         Text {
                             id: volIcon
-                            text: volSlider.value > 0 ? "\ue050" : "\ue04f" // "󰕾" : "󰝟"
+                            text: volSlider.value > 0 ? "\ue050" : "\ue04f"
                             font.pointSize: 16
                             font.family: "Material Symbols Rounded"
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
@@ -68,7 +67,6 @@ Rectangle {
                         }
                     }
                 }
-
 
                 handle: Rectangle {
                     x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)
@@ -103,35 +101,47 @@ Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             radius: 20
-            color: isActive ? "#D6BEFA" : (mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C")
+            color: mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C"
             Behavior on color { ColorAnimation { duration: 150 } }
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 14
+                anchors.leftMargin: 6
+                anchors.rightMargin: 14
                 spacing: 10
 
-                Text {
-                    font.family: "Material Symbols Rounded" // "Font Awesome 6 Free"
-                    text: parent.parent.icon
-                    color: parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
-                    font.pointSize: 18
+                Rectangle {
+                    id: iconContainer
+                    Layout.preferredWidth: 50
+                    Layout.preferredHeight: 50
+                    radius: 20
+                    color: isActive ? "#D6BEFA" : "#2C2C2E"
                     Layout.alignment: Qt.AlignVCenter
+
+                    Text {
+                        anchors.centerIn: parent
+                        font.family: "Material Symbols Rounded"
+                        text: parent.parent.parent.icon
+                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                        font.pointSize: 18
+                    }
                 }
 
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 2
+                    Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
+
                     Text {
                         text: parent.parent.parent.title
-                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
-                        font.pointSize: 9
+                        color: "#E6E1E5"
+                        font.pointSize: 9.5
                         font.weight: Font.Bold
                     }
                     Text {
                         text: parent.parent.parent.label
-                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#CAC4D0"
-                        font.pointSize: 7.5
+                        color: "#CAC4D0"
+                        font.pointSize: 8
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -174,12 +184,13 @@ Rectangle {
                 onClicked: if (parent.onTrigger) parent.onTrigger()
             }
         }
+
         RowLayout {
             Layout.fillWidth: true
             spacing: 12
 
             WidePillButton {
-                icon: localProcs.currentSsid.includes("Wired") ? "\ue8be" : "\ue63e" // "󰈀"
+                icon: localProcs.currentSsid.includes("Wired") ? "\ue8be" : "\ue63e"
                 title: "Network"
                 label: localProcs.currentSsid
                 isActive: localProcs.currentSsid !== "No WiFi" && localProcs.currentSsid !== "Disconnected"
@@ -227,7 +238,5 @@ Rectangle {
                 }
             }
         }
-
-        //MediaPlayer { id: mediaPlayer }
     }
 }

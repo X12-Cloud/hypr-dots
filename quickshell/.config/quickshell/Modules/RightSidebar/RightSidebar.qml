@@ -46,52 +46,116 @@ PanelWindow {
             anchors.fill: parent
             anchors.margins: 12
             spacing: 12
+
+            // Top control row
             RowLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 40
-                Layout.leftMargin: 8
-                Layout.topMargin: 8
+                Layout.preferredHeight: 30
+                Layout.leftMargin: 4
+                Layout.rightMargin: 4
+                Layout.topMargin: 4
                 spacing: 10
-                Text {
-                    font.family: "Font Awesome 6 Free" // "Material Symbols Rounded"
-                    text: "\uf17c"
-                    color: "#FFFFFF"
-                    font.pointSize: 14
-                    Layout.alignment: Qt.AlignVCenter
-                }
-                Text {
-                    text: localProcs.uptime
-                    color: "#E6E1E5"
-                    font.pointSize: 12
-                    font.weight: Font.Bold
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignVCenter
-                }
-                Item { Layout.fillWidth: true }
+
                 Rectangle {
-                    width: 32
-                    height: 32
-                    radius: 16
-                    color: reloadMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-                    Layout.alignment: Qt.AlignVCenter
+                    Layout.preferredWidth: 160
+                    Layout.fillHeight: true
+                    radius: 90
+                    color: "#2C2C2E"
 
-                    Text {
-                        anchors.centerIn: parent
-                        font.family: "Material Symbols Rounded"
-                        text: "\ue5d5"
-                        color: "#FFFFFF"
-                        font.pointSize: 14
-                    }
-
-                    MouseArea {
-                        id: reloadMouse
+                    RowLayout {
                         anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: Quickshell.reload()
+                        anchors.leftMargin: 14
+                        anchors.rightMargin: 14
+                        spacing: 8
+
+                        Text {
+                            font.family: "Font Awesome 6 Free"
+                            text: "\uf17c"
+                            color: "#D6BEFA"
+                            font.pointSize: 11
+                            font.weight: Font.Bold
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+                        Text {
+                            text: localProcs.uptime
+                            color: "#E6E1E5"
+                            font.pointSize: 10.5
+                            font.weight: Font.Bold
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                    }
+                }
+
+                Item { Layout.fillWidth: true }
+
+                Rectangle {
+                    Layout.preferredWidth: 96
+                    Layout.fillHeight: true
+                    radius: 23
+                    color: "#2C2C2E"
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        spacing: 2
+
+                        // Shell Reload Button
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            radius: 20
+                            color: reloadMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            Text {
+                                anchors.centerIn: parent
+                                font.family: "Material Symbols Rounded"
+                                text: "\ue5d5"
+                                color: "#E6E1E5"
+                                font.pointSize: 13
+                            }
+
+                            MouseArea {
+                                id: reloadMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Quickshell.reload()
+                            }
+                        }
+
+                        // Power Off Button
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            radius: 20
+                            color: powerMouse.containsMouse ? "#E94A4A" : "transparent"
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            Text {
+                                anchors.centerIn: parent
+                                font.family: "Material Symbols Rounded"
+                                text: "\ue8ac"
+                                color: powerMouse.containsMouse ? "#1C1C1E" : "#E6E1E5"
+                                font.pointSize: 13
+                            }
+
+                            MouseArea {
+                                id: powerMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    localProcs.run(localProcs.powerMenu)
+                                }
+                            }
+                        }
                     }
                 }
             }
+
             QuickSettings {
                 id: settingsCard
                 Layout.fillWidth: true

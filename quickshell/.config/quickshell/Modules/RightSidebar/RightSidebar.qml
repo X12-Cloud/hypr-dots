@@ -122,7 +122,7 @@ PanelWindow {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: Quickshell.reload()
+                                onClicked: Quickshell.reload(Quickshell.configPath)
                             }
                         }
 
@@ -148,7 +148,15 @@ PanelWindow {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    localProcs.run(localProcs.powerMenu)
+                                    let path = Qt.resolvedUrl("..") + "/LogoutMenu/LogoutMenu.qml";
+                                    let component = Qt.createComponent(path);
+
+                                    if (component.status === Component.Ready) {
+                                        let logoutWindow = component.createObject(sidebar);
+                                        sidebar.active = false; 
+                                    } else {
+                                        console.log("Error loading LogoutMenu: " + component.errorString());
+                                    }
                                 }
                             }
                         }

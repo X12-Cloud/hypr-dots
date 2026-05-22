@@ -10,7 +10,7 @@ import "./../"
 PanelWindow {
     id: sidebar
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.exclusionMode: active ? ExclusionMode.Exclusive : ExclusionMode.Ignore
+    WlrLayershell.exclusionMode: active ? WlrLayershell.Exclusive : WlrLayershell.Ignore
     WlrLayershell.margins.top: 50
     WlrLayershell.margins.right: 5
     WlrLayershell.margins.bottom: 5
@@ -47,7 +47,6 @@ PanelWindow {
             anchors.margins: 12
             spacing: 12
 
-            // Top control row
             RowLayout {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
@@ -101,7 +100,6 @@ PanelWindow {
                         anchors.margins: 3
                         spacing: 2
 
-                        // Shell Reload Button
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
@@ -112,7 +110,7 @@ PanelWindow {
                             Text {
                                 anchors.centerIn: parent
                                 font.family: "Material Symbols Rounded"
-                                text: "\ue5d5"
+                                text: "\uf053"
                                 color: "#E6E1E5"
                                 font.pointSize: 13
                             }
@@ -126,7 +124,6 @@ PanelWindow {
                             }
                         }
 
-                        // Power Off Button
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
@@ -152,8 +149,8 @@ PanelWindow {
                                     let component = Qt.createComponent(path);
 
                                     if (component.status === Component.Ready) {
-                                        let logoutWindow = component.createObject(sidebar);
                                         sidebar.active = false; 
+                                        let logoutWindow = component.createObject(null);
                                     } else {
                                         console.log("Error loading LogoutMenu: " + component.errorString());
                                     }

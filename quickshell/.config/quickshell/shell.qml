@@ -20,8 +20,6 @@ ShellRoot {
         keepOnReload: true;
         onNotification: (n) => {
             n.tracked = true
-            console.log("Summary: " + n.summary)
-            console.log("Body: " + n.body)
         }
     }
 

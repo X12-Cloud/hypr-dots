@@ -100,7 +100,7 @@ Rectangle {
 
             Layout.fillWidth: true
             Layout.preferredHeight: 60
-            radius: 20
+            radius: isActive ? 20 : 30
             color: mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C"
             Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -114,7 +114,7 @@ Rectangle {
                     id: iconContainer
                     Layout.preferredWidth: 50
                     Layout.preferredHeight: 50
-                    radius: 20
+                    radius: isActive ? 20 : 30
                     color: isActive ? "#D6BEFA" : "#2C2C2E"
                     Layout.alignment: Qt.AlignVCenter
 
@@ -167,7 +167,7 @@ Rectangle {
 
             Layout.preferredWidth: 60
             Layout.preferredHeight: 60
-            radius: 20
+            radius: isActive ? 20 : 30
             color: isActive ? "#D6BEFA" : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
             Behavior on color { ColorAnimation { duration: 150 } }
 

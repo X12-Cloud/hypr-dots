@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
+import "./../"
 
 Rectangle {
     Layout.fillWidth: true
     Layout.fillHeight: true
-    radius: 28
+    radius: 18
     color: "#2C2C2E"
 
     Procs { id: localProcs }
@@ -227,6 +228,6 @@ Rectangle {
             }
         }
 
-        MediaPlayer { id: mediaPlayer }
+        //MediaPlayer { id: mediaPlayer }
     }
 }

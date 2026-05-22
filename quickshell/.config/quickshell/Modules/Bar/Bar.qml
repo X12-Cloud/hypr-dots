@@ -2,12 +2,15 @@ import QtQuick
 import QtQuick.Window
 import Quickshell
 import Quickshell.Hyprland
+import "./../"
 
 PanelWindow {
     id: panel
     anchors { left: true; top: true; right: true }
     implicitHeight: 45
     color: "transparent"
+
+    Procs { id: localProcs }
 
     // ---------------- Date/Time Logic ----------------
     property string currentTime: ""
@@ -116,6 +119,37 @@ PanelWindow {
             Text {
                 id: timeDisplay
                 text: panel.currentTime
+                anchors.centerIn: parent
+                color: "#ECECEC"
+                font.pixelSize: 16
+                font.family: "Inter, Roboto, sans-serif"
+            }
+        }
+
+        // ---------------- Media ----------------
+        Rectangle {
+            id: mediaBar
+            radius: 30
+            height: 32
+            color: "#2C2C2E"
+            border.width: 0
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: 12
+            }
+            width: mediaContent.contentWidth + 24
+            visible: true
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: mediaPlayerBig.active = !mediaPlayerBig.active
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+            }
+            Text {
+                id: mediaContent
+                text: localProcs.trackTitle
                 anchors.centerIn: parent
                 color: "#ECECEC"
                 font.pixelSize: 16

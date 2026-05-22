@@ -5,6 +5,7 @@ import Quickshell.Io
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications 0.0
+import "./../"
 
 PanelWindow {
     id: sidebar
@@ -30,7 +31,7 @@ PanelWindow {
         anchors.bottom: parent.bottom
         width: parent.width
         color: "#1C1C1E"
-        radius: 30
+        radius: 20
         x: sidebar.active ? 0 : sidebar.width
 
         Behavior on x {
@@ -59,18 +60,47 @@ PanelWindow {
                     Layout.alignment: Qt.AlignVCenter
                 }
                 Text {
-                    text: localProcs.osName
+                    text: localProcs.uptime
                     color: "#E6E1E5"
                     font.pointSize: 12
                     font.weight: Font.Bold
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                 }
+                Item { Layout.fillWidth: true }
+                Rectangle {
+                    width: 32
+                    height: 32
+                    radius: 16
+                    color: reloadMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+                    Layout.alignment: Qt.AlignVCenter
+
+                    Text {
+                        anchors.centerIn: parent
+                        font.family: "Material Symbols Rounded"
+                        text: "\ue5d5"
+                        color: "#FFFFFF"
+                        font.pointSize: 14
+                    }
+
+                    MouseArea {
+                        id: reloadMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.reload()
+                    }
+                }
             }
             QuickSettings {
                 id: settingsCard
                 Layout.fillWidth: true
-                Layout.preferredHeight: sidebar.height * 0.35
+                Layout.preferredHeight: sidebar.height * 0.16
+            }
+            MediaPlayer {
+                id: mediaPlayerSmall
+                Layout.fillWidth: true
+                visible: true
             }
             NotificationList {
                 id: notifCard

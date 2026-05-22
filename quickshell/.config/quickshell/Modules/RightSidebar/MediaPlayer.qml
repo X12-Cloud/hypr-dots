@@ -2,14 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+import "./../"
 
 Rectangle {
     id: root
     Layout.fillWidth: true
-    Layout.preferredHeight: 160
+    implicitHeight: Math.max(165, mainContentLayout.implicitHeight + 32)
     radius: 20
     color: "#2C2C2E"
     clip: true
+
+    property alias active: root.visible
 
     function formatTime(microseconds) {
         let totalSeconds = Math.floor(microseconds / 1000000);
@@ -33,7 +36,7 @@ Rectangle {
             anchors.fill: parent
             anchors.margins: 4
             source: {
-                if (localProcs.trackArt === "") return "images/blackhole.jpg";
+                if (localProcs.trackArt === "") return "../images/blackhole.jpg";
                 if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
                 return localProcs.trackArt;
             }
@@ -57,11 +60,16 @@ Rectangle {
     }
 
     ColumnLayout {
-        anchors.fill: parent
+        id: mainContentLayout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         anchors.margins: 16
         spacing: 8
+        implicitHeight: childrenRect.height
 
         RowLayout {
+            Layout.fillWidth: true
             Text {
                 text: formatTime(localProcs.trackPosUs)
                 color: "#CAC4D0"
@@ -73,7 +81,6 @@ Rectangle {
                 color: "#CAC4D0"
                 font.pointSize: 9
             }
-            Layout.fillWidth: true
             Item { Layout.fillWidth: true }
             Rectangle {
                 height: 18
@@ -101,6 +108,7 @@ Rectangle {
         }
 
         RowLayout {
+            Layout.fillWidth: true
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 2
@@ -142,6 +150,7 @@ Rectangle {
         }
 
         RowLayout {
+            Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
             spacing: 0
 

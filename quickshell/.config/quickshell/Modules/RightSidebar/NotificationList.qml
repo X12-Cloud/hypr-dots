@@ -2,12 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "Notifications/"
+import "./../"
 
 Rectangle {
     id: root
     Layout.fillWidth: true
     Layout.preferredHeight: 400
-    radius: 28
+    radius: 18
     color: "#2C2C2E"
     property bool showUtils: false
 

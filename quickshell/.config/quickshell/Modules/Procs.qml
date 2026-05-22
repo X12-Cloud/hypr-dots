@@ -7,6 +7,7 @@ Item {
     id: procs
 
     property string osName: "Unknown OS"
+    property string uptime: "Too long"
     property string currentSsid: "Disconnected"
     property string currentBtDevice: "Disconnected"
     property string currentSinkName: "Detecting Audio..."
@@ -95,6 +96,16 @@ Item {
             onRead: (data) => {
                 let name = data.trim();
                 procs.osName = name.length > 0 ? name : "Unknown OS";
+            }
+        }
+    }
+    Process {
+        id: getUptime
+        command: ["sh", "-c", "uptime -p | sed -e 's/^up /Up /' -e 's/ hours\\?,\\?/h/' -e 's/ minutes\\?/m/'"]
+        stdout: SplitParser {
+            onRead: (data) => {
+                let time = data.trim();
+                procs.uptime = time.length > 0 ? time : "Too long bro";
             }
         }
     }
@@ -251,6 +262,7 @@ Item {
     Timer {
         interval: 2000; running: true; repeat: true
         onTriggered: {
+            getUptime.running = true
             getSsid.running = true
             getBtDevice.running = true
             getMetadata.running = true

@@ -22,6 +22,8 @@ PanelWindow {
     visible: active || sidebarContent.opacity > 0
     mask: Region { item: sidebarContent }
 
+    property var shellContext: null
+
     property bool active: false
     Procs { id: localProcs }
 
@@ -145,14 +147,11 @@ PanelWindow {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    let path = Qt.resolvedUrl("..") + "/LogoutMenu/LogoutMenu.qml";
-                                    let component = Qt.createComponent(path);
-
-                                    if (component.status === Component.Ready) {
-                                        sidebar.active = false; 
-                                        let logoutWindow = component.createObject(null);
+                                    sidebar.active = false;
+                                    if (sidebar.shellContext !== null) {
+                                        sidebar.shellContext.createLogoutMenu();
                                     } else {
-                                        console.log("Error loading LogoutMenu: " + component.errorString());
+                                        console.log("Error: shellContext is not bound to root shell root element.");
                                     }
                                 }
                             }

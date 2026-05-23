@@ -12,7 +12,7 @@ ShellRoot {
 
     Loader { active: true; sourceComponent: Bar{} }
 
-    RS.RightSidebar { id: rightSidebar }
+    RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig }
 
     NotificationServer {
@@ -20,6 +20,15 @@ ShellRoot {
         keepOnReload: true;
         onNotification: (n) => {
             n.tracked = true
+        }
+    }
+
+    function createLogoutMenu() {
+        let component = Qt.createComponent("Modules/LogoutMenu/LogoutMenu.qml");
+        if (component.status === Component.Ready) {
+            component.createObject(null);
+        } else {
+            console.log("Error: " + component.errorString());
         }
     }
 

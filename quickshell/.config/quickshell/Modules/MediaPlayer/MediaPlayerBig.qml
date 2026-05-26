@@ -173,7 +173,6 @@ PanelWindow {
                         Rectangle {
                             width: trackProgress.visualPosition * parent.width
                             height: parent.height
-                            // UPDATED: Added context theme hook
                             color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                             radius: 6
                         }
@@ -184,7 +183,6 @@ PanelWindow {
                         implicitWidth: 6
                         implicitHeight: 16
                         radius: 3
-                        // UPDATED: Added context theme hook
                         color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                     }
                 }
@@ -224,7 +222,6 @@ PanelWindow {
 
                 Rectangle {
                     width: 64; height: 64; radius: 32
-                    // UPDATED: Added context theme hook
                     color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                     scale: playMouse.pressed ? 0.92 : (playMouse.containsMouse ? 1.05 : 1.0)
                     Behavior on scale { NumberAnimation { duration: 100 } }

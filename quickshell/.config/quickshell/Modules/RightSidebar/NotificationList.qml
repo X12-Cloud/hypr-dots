@@ -12,6 +12,8 @@ Rectangle {
     color: "#2C2C2E"
     property bool showUtils: false
 
+    property var shellContext: null 
+
     Procs { id: localProcs }
 
     opacity: localProcs.isDndActive ? 0.6 : 1.0
@@ -38,7 +40,10 @@ Rectangle {
                 Text {
                     anchors.centerIn: parent
                     text: "Clear All"
-                    color: clearMouse.containsMouse ? "#D6BEFA" : "#CAC4D0"
+                    // UPDATED: Use dynamic theme color on hover with fallback
+                    color: clearMouse.containsMouse 
+                           ? (root.shellContext ? root.shellContext.accentNormal : "#D6BEFA") 
+                           : "#CAC4D0"
                     font.pointSize: 9
                     font.weight: Font.Medium
                 }
@@ -64,7 +69,10 @@ Rectangle {
                 Text {
                     anchors.centerIn: parent
                     text: root.showUtils ? "󰵅" : "󰻠" // Switch icons
-                    color: switchMouse.containsMouse ? "#D6BEFA" : "#CAC4D0"
+                    // UPDATED: Use dynamic theme color on hover with fallback
+                    color: switchMouse.containsMouse 
+                           ? (root.shellContext ? root.shellContext.accentNormal : "#D6BEFA") 
+                           : "#CAC4D0"
                 }
                 MouseArea {
                     id: switchMouse
@@ -120,7 +128,8 @@ Rectangle {
                                     Text {
                                         anchors.centerIn: parent
                                         text: "󰵅"
-                                        color: "#D6BEFA"
+                                        // UPDATED: Use dynamic theme color for fallback placeholder icon
+                                        color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
                                         font.pointSize: 18
                                         visible: notifIcon.status !== Image.Ready
                                     }
@@ -128,6 +137,7 @@ Rectangle {
                             }
                             ColumnLayout {
                                 spacing: 2
+                                Layout.fillWidth: true
                                 Text {
                                     text: modelData.summary;
                                     color: "#E6E1E5"; font.pointSize: 14;

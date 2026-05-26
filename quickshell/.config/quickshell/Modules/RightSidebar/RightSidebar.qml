@@ -164,16 +164,19 @@ PanelWindow {
                 id: settingsCard
                 Layout.fillWidth: true
                 Layout.preferredHeight: sidebar.height * 0.16
+                shellContext: sidebar.shellContext
             }
             MediaPlayer {
                 id: mediaPlayerSmall
                 Layout.fillWidth: true
                 visible: true
+                shellContext: sidebar.shellContext
             }
             NotificationList {
                 id: notifCard
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                shellContext: sidebar.shellContext
             }
         }
     }

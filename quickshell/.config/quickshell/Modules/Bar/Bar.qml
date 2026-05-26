@@ -9,6 +9,7 @@ PanelWindow {
     anchors { left: true; top: true; right: true }
     implicitHeight: 45
     color: "transparent"
+    property var shellContext: null
 
     Procs { id: localProcs }
 
@@ -61,7 +62,9 @@ PanelWindow {
                     radius: 999
                     height: 30
                     width: modelData.active ? 32 : 28 // 46 : 30
-                    color: modelData.active ? "#D6BEFA" : "#262130"
+                    color: modelData.active 
+                           ? (panel.shellContext ? panel.shellContext.accentNormal : "#D6BEFA") 
+                           : "#262130"
                     scale: modelData.active ? 1.12 : 1.0
                     border.width: 0
 

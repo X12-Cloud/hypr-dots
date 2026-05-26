@@ -5,10 +5,12 @@ import Quickshell.Io
 import "./../"
 
 Rectangle {
+    id: settingsRoot
     Layout.fillWidth: true
     Layout.fillHeight: true
     radius: 18
     color: "#2C2C2E"
+    property var shellContext: null
 
     Procs { id: localProcs }
 
@@ -41,7 +43,7 @@ Rectangle {
                     Rectangle {
                         width: volSlider.visualPosition * parent.width
                         height: parent.height
-                        color: "#D6BEFA"
+                        color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#D6BEFA"
                         radius: 10
                     }
                     RowLayout {
@@ -74,7 +76,8 @@ Rectangle {
                     implicitWidth: 10
                     implicitHeight: 50
                     radius: 10
-                    color: "#D6BEFA"
+                    color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#D6BEFA"
+
                     border.color: volSlider.pressed ? "#FFFFFF" : "#E6E1E5"
                     border.width: 2
 
@@ -91,6 +94,9 @@ Rectangle {
         }
 
         component WidePillButton : Rectangle {
+            // FIX: Added an explicit ID to the component root
+            id: pillRoot
+            property var shellContext: null
             property string icon: ""
             property string title: ""
             property string label: ""
@@ -100,7 +106,7 @@ Rectangle {
 
             Layout.fillWidth: true
             Layout.preferredHeight: 60
-            radius: isActive ? 20 : 30
+            radius: pillRoot.isActive ? 20 : 30
             color: mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C"
             Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -114,15 +120,18 @@ Rectangle {
                     id: iconContainer
                     Layout.preferredWidth: 50
                     Layout.preferredHeight: 50
-                    radius: isActive ? 20 : 30
-                    color: isActive ? "#D6BEFA" : "#2C2C2E"
+                    radius: pillRoot.isActive ? 20 : 30
+                    // FIX: Safe lookup via the pillRoot ID instead of nested parent chains
+                    color: pillRoot.isActive 
+                           ? (pillRoot.shellContext ? pillRoot.shellContext.accentNormal : "#D6BEFA") 
+                           : "#2C2C2E"
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
                         anchors.centerIn: parent
                         font.family: "Material Symbols Rounded"
-                        text: parent.parent.parent.icon
-                        color: parent.parent.parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                        text: pillRoot.icon
+                        color: pillRoot.isActive ? "#2C2C2E" : "#E6E1E5"
                         font.pointSize: 18
                     }
                 }
@@ -133,13 +142,13 @@ Rectangle {
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
-                        text: parent.parent.parent.title
+                        text: pillRoot.title
                         color: "#E6E1E5"
                         font.pointSize: 9.5
                         font.weight: Font.Bold
                     }
                     Text {
-                        text: parent.parent.parent.label
+                        text: pillRoot.label
                         color: "#CAC4D0"
                         font.pointSize: 8
                         elide: Text.ElideRight
@@ -152,36 +161,42 @@ Rectangle {
                 id: mouseWide; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                 Timer {
                     id: lpTimerWide; interval: 500
-                    onTriggered: { if (parent.pressed && parent.parent.onLongPress) parent.parent.onLongPress() }
+                    onTriggered: { if (parent.pressed && pillRoot.onLongPress) pillRoot.onLongPress() }
                 }
                 onPressed: lpTimerWide.start()
                 onReleased: lpTimerWide.stop()
-                onClicked: if (parent.onTrigger) parent.onTrigger()
+                onClicked: if (pillRoot.onTrigger) pillRoot.onTrigger()
             }
         }
 
         component SquareButton : Rectangle {
+            // FIX: Added an explicit ID to the component root
+            id: squareRoot
+            property var shellContext: null
             property string icon: ""
             property bool isActive: false
             property var onTrigger: null
 
             Layout.preferredWidth: 60
             Layout.preferredHeight: 60
-            radius: isActive ? 20 : 30
-            color: isActive ? "#D6BEFA" : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
+            radius: squareRoot.isActive ? 20 : 30
+            // FIX: Safe lookup via the squareRoot ID
+            color: squareRoot.isActive 
+                   ? (squareRoot.shellContext ? squareRoot.shellContext.accentNormal : "#D6BEFA") 
+                   : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
             Behavior on color { ColorAnimation { duration: 150 } }
 
             Text {
                 anchors.centerIn: parent
-                text: parent.icon
-                color: parent.isActive ? "#2C2C2E" : "#E6E1E5"
+                text: squareRoot.icon
+                color: squareRoot.isActive ? "#2C2C2E" : "#E6E1E5"
                 font.pointSize: 18
                 font.family: "Material Symbols Rounded"
             }
 
             MouseArea {
                 id: mouseSquare; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                onClicked: if (parent.onTrigger) parent.onTrigger()
+                onClicked: if (squareRoot.onTrigger) squareRoot.onTrigger()
             }
         }
 
@@ -190,6 +205,7 @@ Rectangle {
             spacing: 12
 
             WidePillButton {
+                shellContext: settingsRoot.shellContext
                 icon: localProcs.currentSsid.includes("Wired") ? "\ue8be" : "\ue63e"
                 title: "Network"
                 label: localProcs.currentSsid
@@ -198,6 +214,7 @@ Rectangle {
                 onLongPress: () => { localProcs.run(localProcs.wifiManager) }
             }
             WidePillButton {
+                shellContext: settingsRoot.shellContext
                 icon: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\ue1a7"
                 title: "Bluetooth"
                 label: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "Not connected"
@@ -205,6 +222,7 @@ Rectangle {
                 onTrigger: () => { localProcs.run(localProcs.btManager) }
             }
             SquareButton {
+                shellContext: settingsRoot.shellContext
                 icon: "\uefef"
                 isActive: localProcs.keepSysAwake
                 onTrigger: () => {
@@ -218,12 +236,14 @@ Rectangle {
             spacing: 12
 
             WidePillButton {
+                shellContext: settingsRoot.shellContext
                 icon: "\uf003"
                 title: "Sound Devices"
                 label: localProcs.currentSinkName
                 isActive: true
             }
             SquareButton {
+                shellContext: settingsRoot.shellContext
                 icon: localProcs.isNightLightActive ? "\uf03d" : "\ue430"
                 isActive: localProcs.isNightLightActive
                 onTrigger: () => {
@@ -231,6 +251,7 @@ Rectangle {
                 }
             }
             SquareButton {
+                shellContext: settingsRoot.shellContext
                 icon: localProcs.isDndActive ? "\ueffb" : "\ue643"
                 isActive: localProcs.isDndActive
                 onTrigger: () => {

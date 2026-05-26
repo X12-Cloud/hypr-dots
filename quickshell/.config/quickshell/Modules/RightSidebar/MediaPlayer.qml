@@ -13,6 +13,7 @@ Rectangle {
     clip: true
 
     property alias active: root.visible
+    property var shellContext: null 
 
     function formatTime(microseconds) {
         let totalSeconds = Math.floor(microseconds / 1000000);
@@ -86,7 +87,8 @@ Rectangle {
                 height: 18
                 width: deviceText.implicitWidth + 30
                 radius: 9
-                color: "#D6BEFA"
+                // UPDATED: Dynamic context accent color with fallback
+                color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
                 RowLayout {
                     anchors.centerIn: parent
                     spacing: 4
@@ -132,7 +134,8 @@ Rectangle {
             }
             Rectangle {
                 width: 50; height: 50; radius: 20
-                color: "#D6BEFA"
+                // UPDATED: Dynamic context accent color with fallback
+                color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
                 scale: playMouse.pressed ? 0.9 : (playMouse.containsMouse ? 1.05 : 1.0)
                 Behavior on scale { NumberAnimation { duration: 100 } }
                 Text {
@@ -185,7 +188,8 @@ Rectangle {
                     Rectangle {
                         width: trackProgress.visualPosition * parent.width
                         height: parent.height
-                        color: "#D6BEFA"
+                        // UPDATED: Dynamic context accent color with fallback
+                        color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
                         radius: 6
                     }
                 }
@@ -195,7 +199,8 @@ Rectangle {
                     implicitWidth: 5
                     implicitHeight: 20
                     radius: 20
-                    color: "#D6BEFA"
+                    // UPDATED: Dynamic context accent color with fallback
+                    color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
                     border.color: trackProgress.pressed ? "#FFFFFF" : "#E6E1E5"
                     border.width: 2
 

@@ -21,6 +21,8 @@ PanelWindow {
 
     property bool active: false
 
+    property var shellContext: null
+
     Procs { id: localProcs }
 
     Rectangle {
@@ -34,6 +36,7 @@ PanelWindow {
 
         y: mediaWindow.active ? 0 : -mediaWindow.height
         Behavior on y {
+            id: rootYAnim
             NumberAnimation {
                 duration: 400
                 easing.type: Easing.OutBack
@@ -83,7 +86,7 @@ PanelWindow {
                     id: mediaArt
                     anchors.fill: parent
                     source: {
-                        if (localProcs.trackArt === "") return "";                          if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
+                        if (localProcs.trackArt === "") return "";                                         if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
                         return localProcs.trackArt;
                     }
                     fillMode: Image.PreserveAspectCrop
@@ -98,7 +101,8 @@ PanelWindow {
                     height: 22
                     width: deviceText.implicitWidth + 24
                     radius: 11
-                    color: "#D6BEFA"
+                    // UPDATED: Added context theme hook
+                    color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
 
                     RowLayout {
                         anchors.centerIn: parent
@@ -170,7 +174,8 @@ PanelWindow {
                         Rectangle {
                             width: trackProgress.visualPosition * parent.width
                             height: parent.height
-                            color: "#D6BEFA"
+                            // UPDATED: Added context theme hook
+                            color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                             radius: 6
                         }
                     }
@@ -180,7 +185,8 @@ PanelWindow {
                         implicitWidth: 6
                         implicitHeight: 16
                         radius: 3
-                        color: "#D6BEFA"
+                        // UPDATED: Added context theme hook
+                        color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                     }
                 }
 
@@ -219,7 +225,8 @@ PanelWindow {
 
                 Rectangle {
                     width: 64; height: 64; radius: 32
-                    color: "#D6BEFA"
+                    // UPDATED: Added context theme hook
+                    color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
                     scale: playMouse.pressed ? 0.92 : (playMouse.containsMouse ? 1.05 : 1.0)
                     Behavior on scale { NumberAnimation { duration: 100 } }
                     Text {

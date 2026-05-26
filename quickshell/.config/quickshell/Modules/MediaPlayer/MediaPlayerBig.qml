@@ -101,7 +101,6 @@ PanelWindow {
                     height: 22
                     width: deviceText.implicitWidth + 24
                     radius: 11
-                    // UPDATED: Added context theme hook
                     color: mediaWindow.shellContext ? mediaWindow.shellContext.accentNormal : "#D6BEFA"
 
                     RowLayout {

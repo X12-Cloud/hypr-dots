@@ -200,7 +200,10 @@ Rectangle {
 
                 Item { Layout.fillHeight: true }
             }
-            UtilsCard {}
+            UtilsCard {
+                id: utilsCard
+                shellContext: root.shellContext
+            }
         }
     }
 }

@@ -22,10 +22,21 @@ Item {
     property bool isDndActive: false
     property bool isNightLightActive: false
     property bool keepSysAwake: false
+    
+    // Core Metrics
     property real cpuUsage: 0.0
     property real memUsage: 0.0
     property real diskUsage: 0.0
     property real cpuTemp: 0.0
+
+    // Extra Metrics
+    property string cpuFreq: "Dynamic"
+    property string loadAvg: "Nominal"
+    property string memBuffers: "Optimized"
+    property string swapUsage: "0"
+    property string cpuGovernor: "Performance"
+    property string diskIO: "Idle"
+    property string diskMountPoint: "[ / ]"
 
     property alias volumeSetter: volumeSetter
     property alias wifiToggle: wifiToggle
@@ -60,32 +71,61 @@ Item {
         run(awakeToggle);
     }
 
+    // Combined Data Fetching via Multi-Statement Shell Scripts
     Process {
         id: cpuPercentage
-        command: ["sh", "-c", "top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* id.*/\\1/\" | awk '{print 100 - $1}'"]
+        command: ["sh", "-c", "usage=$(top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/' | awk '{print 100 - $1}'); freq=$(lscpu | grep 'CPU MHz' | awk '{print $3}'); load=$(cat /proc/loadavg | awk '{print $1}'); echo \"$usage||$freq||$load\""]
         stdout: SplitParser {
-            onRead: (data) => { procs.cpuUsage = parseFloat(data.trim()) || 0 }
+            onRead: (data) => {
+                let parts = data.trim().split("||");
+                if (parts.length >= 3) {
+                    procs.cpuUsage = parseFloat(parts[0]) || 0;
+                    procs.cpuFreq = parts[1] ? Math.round(parseFloat(parts[1])) + " MHz" : "Dynamic";
+                    procs.loadAvg = parts[2] || "Nominal";
+                }
+            }
         }
     }
     Process {
         id: ramPercentage
-        command: ["sh", "-c", "free | grep Mem | awk '{print $3/$2 * 100.0}'"]
+        command: ["sh", "-c", "free | awk '/Mem:/ {print ($3/$2)*100 \"||\" ($6+$7)/1024/1024} /Swap:/ {print \"||\" ($2 > 0 ? ($3/$2)*100 : 0)}' | tr -d '\\n'"]
         stdout: SplitParser {
-            onRead: (data) => { procs.memUsage = parseFloat(data.trim()) || 0 }
+            onRead: (data) => {
+                let parts = data.trim().split("||");
+                if (parts.length >= 3) {
+                    procs.memUsage = parseFloat(parts[0]) || 0;
+                    procs.memBuffers = parts[1] ? parseFloat(parts[1]).toFixed(1) + " GB" : "Optimized";
+                    procs.swapUsage = parts[2] ? Math.round(parseFloat(parts[2])).toString() : "0";
+                }
+            }
         }
     }
     Process {
         id: diskPercentage
-        command: ["sh", "-c", "df / | awk 'NR==2 {print $5}' | sed 's/%//'"]
+        command: ["sh", "-c", "df / | awk 'NR==2 {print $5 \"||\" $6}'; iostat -c 1 1 | awk 'NR==4 {print $1}'"]
         stdout: SplitParser {
-            onRead: (data) => { procs.diskUsage = parseFloat(data.trim()) || 0 }
+            onRead: (data) => {
+                let clean = data.trim().replace(/\n/g, "||");
+                let parts = clean.split("||");
+                if (parts.length >= 2) {
+                    procs.diskUsage = parseFloat(parts[0].replace("%", "")) || 0;
+                    procs.diskMountPoint = parts[1] ? "[ " + parts[1] + " ]" : "[ / ]";
+                    procs.diskIO = parts[2] && parseFloat(parts[2]) > 5.0 ? "Active" : "Idle";
+                }
+            }
         }
     }
     Process {
         id: cpuTemperature
-        command: ["sh", "-c", "cat /sys/class/hwmon/hwmon*/temp1_input | awk '{print $1/1000}'"]
+        command: ["sh", "-c", "temp=$(cat /sys/class/hwmon/hwmon*/temp1_input | head -n 1 | awk '{print $1/1000}'); gov=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null || echo 'N/A'); echo \"$temp||$gov\""]
         stdout: SplitParser {
-            onRead: (data) => { procs.cpuTemp = parseFloat(data.trim()) || 0 }
+            onRead: (data) => {
+                let parts = data.trim().split("||");
+                if (parts.length >= 2) {
+                    procs.cpuTemp = parseFloat(parts[0]) || 0;
+                    procs.cpuGovernor = parts[1] ? parts[1].charAt(0).toUpperCase() + parts[1].slice(1) : "Performance";
+                }
+            }
         }
     }
 
@@ -142,7 +182,6 @@ Item {
         command: ["sh", "-c", "wlogout -b 3 &"]
     }
 
-    // WiFi/BT Fetchers
     Process {
         id: getSsid
         command: ["sh", "-c", "nmcli -t -f NAME connection show --active | head -n 1"]
@@ -165,7 +204,6 @@ Item {
         }
     }
 
-    // Current sound device
     Process {
         id: getSoundDevice
         command: ["sh", "-c", "wpctl status | grep -A 20 'Sinks:' | grep '*' | awk -F'.' '{print $2}' | sed -E 's/^[[:space:]]+[0-9]+ //; s/[[:space:]]+(\\[vol:.*\\]|\\[MUTED\\])//g' | tr -d '\\n'"]
@@ -177,7 +215,6 @@ Item {
         }
     }
 
-    // Volume Slider/Fetcher
     Process {
         id: volumeSetter
         function updateVol(val) {
@@ -195,7 +232,6 @@ Item {
         }
     }
 
-    // WiFi & Bluetooth Toggles
     Process {
         id: wifiToggle
         command: ["/bin/sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]
@@ -209,7 +245,6 @@ Item {
         command: ["blueman-manager"]
     }
 
-    // Media Actions
     Process {
         id: mediaNext
         command: ["playerctl", "next"]
@@ -223,7 +258,6 @@ Item {
         command: ["playerctl", "previous"]
     }
 
-    // Metadata Fetcher
     Process {
         id: getMetadata
         command: ["playerctl", "metadata", "--format", "{{title}}||{{artist}}||{{status}}||{{mpris:artUrl}}||{{position}}||{{mpris:length}}"]
@@ -263,7 +297,6 @@ Item {
         }
     }
 
-    // Update loop
     Timer {
         interval: 2000; running: true; repeat: true
         onTriggered: {

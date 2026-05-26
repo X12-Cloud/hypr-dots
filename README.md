@@ -19,8 +19,6 @@
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
 | Desktop Overview | Bar & Side Panel |
 | :---: | :---: |
 | ![Desktop Workspace](assets/images/screenshot_desktop.png) | ![System Panel UI](assets/images/screenshot_ui.png) |

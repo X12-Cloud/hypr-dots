@@ -15,9 +15,7 @@ hl.on("hyprland.start", function()
 end)
 
 -- exec (on file reload)
-hl.exec_cmd(
-	"awww img /home/x12/Pictures/sunset-lake-mountain-sky-scenery-digital-art-3k-wallpaper-uhdpaper.com-908@0@i.jpg"
-)
+hl.exec_cmd("awww img /home/x12/Pictures/wallpapers/2030-3840x2160-desktop-4k-firewatch-wallpaper-image.jpg")
 
 -- Requires
 require("hyprland.general")

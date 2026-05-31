@@ -46,7 +46,7 @@ Rectangle {
         // Top Header Bar
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 4
 
             Rectangle {
                 id: clearBtn
@@ -57,16 +57,16 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "󰎟"
+                    text: "\ue0b8"
+                    font.family: "Material Symbols Rounded"
+                    font.pointSize: 15
                     color: clearMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#D6BEFA") : "#CAC4D0"
-                    font.pointSize: 12
                 }
                 MouseArea {
                     id: clearMouse
                     anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        const entries = notificationsService.trackedNotifications;
-                        for (var i = entries.length - 1; i >= 0; i--) { entries[i].dismiss(); }
+                        notifView.clearAllRequested();
                     }
                 }
                 Behavior on color { ColorAnimation { duration: 150 } }
@@ -89,14 +89,16 @@ Rectangle {
                 }
             }
 
-            // Right Side Action: View Switcher Toggle
+            // View Switcher Toggle
             Rectangle {
                 width: 40; height: 32; radius: 12
                 color: switchMouse.pressed ? "#5A5A5C" : (switchMouse.containsMouse ? "#4A4A4C" : "#3A3A3C")
                 border.color: "#3A3A3C"; border.width: 1
                 Text {
                     anchors.centerIn: parent
-                    text: root.showUtils ? "󰵅" : "󰻠"
+                    text: root.showUtils ? "notification_multiple" : "memory"
+                    font.family: "Material Symbols Rounded"
+                    font.pointSize: 15
                     color: switchMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#D6BEFA") : "#CAC4D0"
                 }
                 MouseArea {
@@ -121,12 +123,21 @@ Rectangle {
                     opacity: shellContext && shellContext.globalDnd ? 0.6 : 1.0
                     Behavior on opacity { NumberAnimation { duration: 250 } }
 
+                    signal clearAllRequested()
+
                     delegate: Rectangle {
                         id: notifItem
                         width: notifView.width
 
                         property bool isExpanded: false
                         property string relativeTime: root.formatRelativeTime(modelData.timestamp)
+
+                        Connections {
+                            target: notifView
+                            function onClearAllRequested() {
+                                modelData.dismiss();
+                            }
+                        }
 
                         Timer {
                             interval: 30000
@@ -224,8 +235,9 @@ Rectangle {
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: notifItem.isExpanded ? "󰅃" : "󰅀"
+                                        text: notifItem.isExpanded ? "\ue316" : "\ue313"
                                         font.pointSize: 11
+                                        font.family: "Material Symbols Rounded"
                                         color: "#CAC4D0"
                                     }
                                     MouseArea {
@@ -250,9 +262,10 @@ Rectangle {
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "󰅖"
+                                        text: "close"
                                         color: "#FFB4AB"
                                         font.pointSize: 12
+                                        font.family: "Material Symbols Rounded"
                                     }
                                     MouseArea {
                                         id: closeActionMouse
@@ -270,9 +283,10 @@ Rectangle {
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "󰌷" // Link / external open arrow glyph
+                                        text: "\ue157" // Link / external open arrow glyph
                                         color: "#E6E1E5"
                                         font.pointSize: 12
+                                        font.family: "Material Symbols Rounded"
                                     }
                                     MouseArea {
                                         id: openActionMouse

@@ -19,7 +19,7 @@ Item {
     property real trackLengthUs: 0.0
     property real percentage: 0.0
     property real currentVolume: 0.0
-    property bool isDndActive: false
+    property bool isDndActive: root.globalDnd
     property bool isNightLightActive: false
     property bool keepSysAwake: false
     
@@ -52,16 +52,16 @@ Item {
     }
 
     function dndToggle() {
-        procs.isDndActive = !procs.isDndActive
-        run(dndToggleProcess)
+        root.globalDnd = !root.globalDnd
+        //run(dndToggleProcess)
     }
     function execNLToggle() {
         procs.isNightLightActive = !procs.isNightLightActive
 
         if (procs.isNightLightActive) {
-            nightLightToggle.command = ["hyprctl", "keyword", "decoration:screen_shader", "/home/x12/.config/hypr/shaders/blue-light.glsl"];
+            nightLightToggle.command = ['hyprctl', 'eval', 'hl.config({ decoration = { screen_shader = "/home/x12/.config/hypr/shaders/blue-light.glsl" } })'];
         } else {
-            nightLightToggle.command = ["hyprctl", "keyword", "decoration:screen_shader", "[[EMPTY]]"];
+            nightLightToggle.command = ['hyprctl', 'eval', 'hl.config({ decoration = { screen_shader = "[[EMPTY]]" } })'];
         }
 
         nightLightToggle.running = false;
@@ -141,7 +141,7 @@ Item {
     }
     Process {
         id: getUptime
-        command: ["sh", "-c", "uptime -p | sed -e 's/^up /Up /' -e 's/ hours\\?,\\?/h/' -e 's/ minutes\\?/m/'"]
+        command: ["sh", "-c", "uptime -p | sed -e 's/^up /Up /' -e 's/ days\\?/d/' -e 's/ hours\\?,\\?/h/' -e 's/ minutes\\?/m/'"]
         stdout: SplitParser {
             onRead: (data) => {
                 let time = data.trim();
@@ -175,11 +175,6 @@ Item {
                 procs.keepSysAwake = (data.trim() === "true");
             }
         }
-    }
-
-    Process {
-        id: powerMenu
-        command: ["sh", "-c", "wlogout -b 3 &"]
     }
 
     Process {
@@ -305,7 +300,6 @@ Item {
             getBtDevice.running = true
             getMetadata.running = true
             getVol.running = true
-            checkDnd.running = true
             checkAwakeStatus.running = true
             getSoundDevice.running = true
 

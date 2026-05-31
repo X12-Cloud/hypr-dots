@@ -24,7 +24,7 @@ ShellRoot {
 
     Loader { active: true; sourceComponent: Bar{ shellContext: root } }
 
-
+    property bool globalDnd: false
     RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig; shellContext: root; }
 
@@ -39,6 +39,7 @@ ShellRoot {
         keepOnReload: true;
         onNotification: (n) => {
             n.tracked = true
+            n.timestamp = new Date()
         }
     }
 

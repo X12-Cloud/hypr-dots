@@ -20,11 +20,13 @@ PanelWindow {
     visible: true
     color: "#80000000"
 
-    // 1. ADD THIS: Holds the reference to your ShellRoot
     property var shellContext: null
 
     Process {
         id: processCmd
+        onExited: (exitCode, exitStatus) => {
+            logoutWindow.destroy();
+        }
     }
 
     Item {
@@ -66,12 +68,11 @@ PanelWindow {
                 rowSpacing: 12
 
                 Repeater {
-                    // 2. UPDATE THE MODEL: Distinguish system commands from internal actions
                     model: [
                         { icon: "\ue8ac", name: "Shutdown",  color: "#E94A4A", type: "cmd", target: ["systemctl", "poweroff"] },
                         { icon: "\uf053", name: "Reboot",    color: "#4ADE80", type: "cmd", target: ["systemctl", "reboot"] },
                         { icon: "\uef44", name: "Suspend",   color: "#60A5FA", type: "cmd", target: ["systemctl", "suspend"] },
-                        { icon: "\uf45e", name: "Btop",      color: "#A78BFB", type: "cmd", target: ["hyprctl", "dispatch", "exec", "foot -e btop"] },
+                        { icon: "\uf45e", name: "Btop",      color: "#A78BFB", type: "cmd", target: ["systemd-run", "--user", "foot", "-e", "btop"] },
                         { icon: "\ue897", name: "Lock",      color: "#FBBF24", type: "lock", target: "" },
                         { icon: "\ue9ba", name: "Log Out",   color: "#A78BFA", type: "cmd", target: ["hyprctl", "dispatch", "exit"] },
                         { icon: "\uf724", name: "Hibernate", color: "#60A5FA", type: "cmd", target: ["systemctl", "hibernate"] },
@@ -122,17 +123,15 @@ PanelWindow {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
 
-                            // 3. UPDATE CLICK LOGIC: Trap the lock action and trigger ShellRoot
                             onClicked: {
                                 if (modelData.type === "cmd") {
                                     processCmd.command = modelData.target;
                                     processCmd.running = true;
-                                    logoutWindow.destroy();
                                 } else if (modelData.type === "lock") {
                                     if (logoutWindow.shellContext !== null) {
                                         logoutWindow.shellContext.isLocked = true;
                                     }
-                                    logoutWindow.destroy(); // Close the menu out of the way
+                                    logoutWindow.destroy();
                                 } else {
                                     logoutWindow.destroy();
                                 }

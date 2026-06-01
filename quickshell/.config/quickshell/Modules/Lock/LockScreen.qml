@@ -311,6 +311,7 @@ PanelWindow {
                             font.pointSize: 13
                             font.family: "Inter, Roboto, sans-serif"
                             color: lockWindow.currentInputText.length > 0 ? "transparent" : textPrimary
+                            cursorVisible: lockWindow.currentInputText.length === 0 && activeFocus
                             echoMode: TextInput.Normal
                             background: Item {}
                             enabled: !authProc.running

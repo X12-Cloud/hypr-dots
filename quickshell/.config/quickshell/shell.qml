@@ -43,6 +43,15 @@ ShellRoot {
         }
     }
 
+    function createLauncher() {
+        let component = Qt.createComponent("Modules/Launcher/Menu.qml");
+        if (component.status === Component.Ready) {
+            component.createObject(null, { "shellContext": root });
+        } else {
+            console.log("Error: " + component.errorString());
+        }
+    }
+
     function createLogoutMenu() {
         let component = Qt.createComponent("Modules/LogoutMenu/LogoutMenu.qml");
         if (component.status === Component.Ready) {
@@ -56,6 +65,11 @@ ShellRoot {
         name: "toggle_sidebar"
         description: "Toggle right sidebar"
         onPressed: { rightSidebar.active = !rightSidebar.active }
+    }
+    GlobalShortcut {
+        name: "open_launcher"
+        description: "Open application launcher"
+        onPressed: { root.createLauncher() }
     }
     GlobalShortcut {
         name: "toggle_logout"

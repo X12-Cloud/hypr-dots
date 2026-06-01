@@ -1,0 +1,85 @@
+[
+  { "name": "Qt Assistant", "exec": "assistant6", "icon": "assistant" }
+,
+  { "name": "Avahi Zeroconf Browser", "exec": "/usr/bin/avahi-discover", "icon": "network-wired" }
+,
+  { "name": "Bluetooth Adapters", "exec": "blueman-adapters", "icon": "blueman-device" }
+,
+  { "name": "Bluetooth Manager", "exec": "blueman-manager", "icon": "blueman" }
+,
+  { "name": "Avahi SSH Server Browser", "exec": "/usr/bin/bssh", "icon": "network-wired" }
+,
+  { "name": "btop++", "exec": "btop", "icon": "btop" }
+,
+  { "name": "Avahi VNC Server Browser", "exec": "/usr/bin/bvnc", "icon": "network-wired" }
+,
+  { "name": "CMake", "exec": "cmake-gui", "icon": "CMakeSetup" }
+,
+  { "name": "OBS Studio", "exec": "obs", "icon": "com.obsproject.Studio" }
+,
+  { "name": "Qt Widgets Designer", "exec": "designer6", "icon": "designer" }
+,
+  { "name": "Discord", "exec": "/usr/bin/discord", "icon": "discord" }
+,
+  { "name": "Firefox", "exec": "/usr/lib/firefox/firefox", "icon": "firefox" }
+,
+  { "name": "Foot Server", "exec": "foot --server", "icon": "foot" }
+,
+  { "name": "Foot", "exec": "foot", "icon": "foot" }
+,
+  { "name": "Foot Client", "exec": "footclient", "icon": "foot" }
+,
+  { "name": "Gammastep Indicator", "exec": "gammastep-indicator", "icon": "gammastep" }
+,
+  { "name": "GNU Image Manipulation Program", "exec": "gimp-3.2", "icon": "gimp" }
+,
+  { "name": "Htop", "exec": "htop", "icon": "htop" }
+,
+  { "name": "OpenJDK Java 21 Console", "exec": "/usr/lib/jvm/java-21-openjdk/bin/jconsole", "icon": "java21-openjdk" }
+,
+  { "name": "OpenJDK Java 21 Shell", "exec": "/usr/lib/jvm/java-21-openjdk/bin/jshell", "icon": "java21-openjdk" }
+,
+  { "name": "kitty", "exec": "kitty", "icon": "kitty" }
+,
+  { "name": "Qt Linguist", "exec": "linguist6", "icon": "linguist" }
+,
+  { "name": "Advanced Network Configuration", "exec": "nm-connection-editor", "icon": "preferences-system-network" }
+,
+  { "name": "Neovim", "exec": "nvim", "icon": "nvim" }
+,
+  { "name": "GTK Settings", "exec": "nwg-look", "icon": "nwg-look" }
+,
+  { "name": "Obsidian", "exec": "/usr/bin/obsidian", "icon": "obsidian" }
+,
+  { "name": "CoreCtrl", "exec": "corectrl", "icon": "corectrl" }
+,
+  { "name": "Files", "exec": "nautilus --new-window", "icon": "org.gnome.Nautilus" }
+,
+  { "name": "Dolphin", "exec": "dolphin", "icon": "org.kde.dolphin" }
+,
+  { "name": "Kate", "exec": "kate -b", "icon": "kate" }
+,
+  { "name": "Konsole", "exec": "konsole", "icon": "utilities-terminal" }
+,
+  { "name": "KWrite", "exec": "kwrite", "icon": "kwrite" }
+,
+  { "name": "Volume Control", "exec": "pavucontrol", "icon": "org.pulseaudio.pavucontrol" }
+,
+  { "name": "qutebrowser", "exec": "qutebrowser --untrusted-args", "icon": "qutebrowser" }
+,
+  { "name": "WezTerm", "exec": "wezterm start --cwd .", "icon": "org.wezfurlong.wezterm" }
+,
+  { "name": "Qt D-Bus Viewer", "exec": "qdbusviewer6", "icon": "qdbusviewer" }
+,
+  { "name": "Qt V4L2 test Utility", "exec": "qv4l2", "icon": "qv4l2" }
+,
+  { "name": "Qt V4L2 video capture utility", "exec": "qvidcap", "icon": "qvidcap" }
+,
+  { "name": "Rofi Theme Selector", "exec": "rofi-theme-selector", "icon": "rofi" }
+,
+  { "name": "Rofi", "exec": "rofi -show", "icon": "rofi" }
+,
+  { "name": "Spotify", "exec": "spotify --uri=%u", "icon": "spotify-client" }
+,
+  { "name": "Zen Browser", "exec": "/opt/zen-browser-bin/zen-bin", "icon": "zen-browser" }
+]

@@ -9,6 +9,7 @@ mainMod = "SUPER"
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind("SUPER + E", hl.dsp.exec_cmd(fileManager))
 hl.bind("SUPER + D", hl.dsp.exec_cmd("~/.config/rofi/run.sh norm 6 6 drun"))
+hl.bind("SUPER + SHIFT + D", hl.dsp.global("quickshell:open_launcher"))
 -- hl.bind("SUPER + L", hl.dsp.exec_cmd("wlogout -b 3"))
 hl.bind("SUPER + L", hl.dsp.global("quickshell:toggle_logout"))
 hl.bind("SUPER + N", hl.dsp.global("quickshell:toggle_sidebar"))

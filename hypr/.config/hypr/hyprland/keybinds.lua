@@ -8,9 +8,7 @@ mainMod = "SUPER"
 -- Keybinds
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind("SUPER + E", hl.dsp.exec_cmd(fileManager))
-hl.bind("SUPER + D", hl.dsp.exec_cmd("~/.config/rofi/run.sh norm 6 6 drun"))
-hl.bind("SUPER + SHIFT + D", hl.dsp.global("quickshell:open_launcher"))
--- hl.bind("SUPER + L", hl.dsp.exec_cmd("wlogout -b 3"))
+hl.bind("SUPER + D", hl.dsp.global(menu))
 hl.bind("SUPER + L", hl.dsp.global("quickshell:toggle_logout"))
 hl.bind("SUPER + N", hl.dsp.global("quickshell:toggle_sidebar"))
 
@@ -42,6 +40,11 @@ hl.bind(
 	)
 )
 
+-- Fallbacks (uncomment to enable)
+-- hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd(menu_fallback))
+-- hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("wlogout -b 3"))
+
+-- Window/Workspace management
 hl.bind("SUPER + left", hl.dsp.focus({ direction = "l" }))
 hl.bind("SUPER + right", hl.dsp.focus({ direction = "r" }))
 hl.bind("SUPER + up", hl.dsp.focus({ direction = "u" }))

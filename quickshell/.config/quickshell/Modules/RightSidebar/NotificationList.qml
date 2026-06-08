@@ -37,7 +37,7 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.topMargin: 20
+        anchors.topMargin: 12
         anchors.bottomMargin: 20
         anchors.leftMargin: 12 
         anchors.rightMargin: 12
@@ -50,7 +50,7 @@ Rectangle {
 
             Rectangle {
                 id: clearBtn
-                width: 40; height: 32; radius: 12
+                width: 48; height: 36; radius: 20
                 color: clearMouse.pressed ? "#5A5A5C" : (clearMouse.containsMouse ? "#4A4A4C" : "#3A3A3C")
                 border.color: "#3A3A3C"; border.width: 1
                 visible: !showUtils
@@ -75,8 +75,8 @@ Rectangle {
             Rectangle {
                 id: headerPill
                 Layout.fillWidth: true
-                height: 32
-                radius: 12
+                height: 36
+                radius: 20
                 color: "#3A3A3C"
 
                 Text {
@@ -91,7 +91,7 @@ Rectangle {
 
             // View Switcher Toggle
             Rectangle {
-                width: 40; height: 32; radius: 12
+                width: 48; height: 36; radius: 20
                 color: switchMouse.pressed ? "#5A5A5C" : (switchMouse.containsMouse ? "#4A4A4C" : "#3A3A3C")
                 border.color: "#3A3A3C"; border.width: 1
                 Text {

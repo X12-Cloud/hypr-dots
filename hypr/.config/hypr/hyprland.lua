@@ -5,7 +5,8 @@
 -- Variables
 terminal = "foot"
 fileManager = "nautilus"
-menu = "~/.config/rofi/run.sh norm 1 1"
+menu_fallback = "~/.config/rofi/run.sh norm 1 1"
+menu = "quickshell:open_launcher"
 qs = "quickshell"
 
 hl.on("hyprland.start", function()

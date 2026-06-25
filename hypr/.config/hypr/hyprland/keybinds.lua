@@ -72,15 +72,13 @@ hl.bind("SUPER + SHIFT + 8", hl.dsp.window.move({ workspace = "8", follow = true
 hl.bind("SUPER + SHIFT + 9", hl.dsp.window.move({ workspace = "9", follow = true }))
 hl.bind("SUPER + SHIFT + 0", hl.dsp.window.move({ workspace = "10", follow = true }))
 
-hl.bind("SUPER + S", hl.dsp.focus({ workspace = "special:magic" }))
-hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic", follow = true }))
+-- hl.bind("SUPER + S", hl.dsp.focus({ workspace = "special:magic" }))
+-- hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic", follow = true }))
 
 hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
-hl.bind("SUPER + mouse:272", function()
-	hl.dispatch(hl.dsp.window.move())
-end, { mouse = true })
+hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 
 hl.bind("SUPER + mouse:273", function()
 	hl.dispatch(hl.dsp.window.resize())

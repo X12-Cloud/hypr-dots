@@ -10,6 +10,9 @@ end
 
 zoxide init fish | source
 
+fish_add_path $HOME/.config/fish/custom_scripts/
+alias xp_customs 'chmod +x ~/.config/fish/custom_scripts/*'
+
 alias pacman 'sudo pacman'
 alias sleep 'systemctl suspend'
 alias ls 'eza --icons'
@@ -23,7 +26,6 @@ alias closevault='sudo umount ~/private_stuff && sudo cryptsetup close my_vault'
 
 # Created by `pipx` on 2025-07-19 08:14:58
 set PATH $PATH /home/mohamed/.local/bin
-# fish_add_path $HOME/.cargo/bin
 
 fastfetch -c minimal
 

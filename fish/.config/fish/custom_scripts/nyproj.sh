@@ -12,8 +12,8 @@ fi
 # Create new tmux session in detached mode
 tmux new-session -d -s "$SESSION_NAME" -c "$TARGET_DIR"
 
-# Create window for neovim (name: neovim)
+# Create window for neovim
 tmux new-window -t "$SESSION_NAME" -c "$TARGET_DIR" -n "neovim"
 
-# Attach to the first window (bash shell)
+# Attach to the first window (fish shell)
 tmux attach-session -t "$SESSION_NAME"

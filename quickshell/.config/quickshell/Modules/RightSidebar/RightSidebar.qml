@@ -163,7 +163,7 @@ PanelWindow {
             QuickSettings {
                 id: settingsCard
                 Layout.fillWidth: true
-                Layout.preferredHeight: sidebar.height * 0.16
+                Layout.preferredHeight: sidebar.height * 0.23
                 shellContext: sidebar.shellContext
             }
             MediaPlayer {

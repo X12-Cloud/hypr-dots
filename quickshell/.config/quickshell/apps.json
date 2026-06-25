@@ -19,7 +19,7 @@
 ,
   { "name": "Qt Widgets Designer", "exec": "designer6", "icon": "designer" }
 ,
-  { "name": "Discord", "exec": "/usr/bin/discord", "icon": "discord" }
+  { "name": "Discord", "exec": "/usr/bin/discord --url --", "icon": "discord" }
 ,
   { "name": "Firefox", "exec": "/usr/lib/firefox/firefox", "icon": "firefox" }
 ,
@@ -81,5 +81,13 @@
 ,
   { "name": "Spotify", "exec": "spotify --uri=%u", "icon": "spotify-client" }
 ,
+  { "name": "Steam", "exec": "/usr/bin/steam", "icon": "steam" }
+,
+  { "name": "Winetricks", "exec": "winetricks --gui", "icon": "winetricks" }
+,
   { "name": "Zen Browser", "exec": "/opt/zen-browser-bin/zen-bin", "icon": "zen-browser" }
+,
+  { "name": "Geometry Dash", "exec": "steam steam://rungameid/322170", "icon": "steam_icon_322170" }
+,
+  { "name": "OBS Studio", "exec": "env QT_QPA_PLATFORM=wayland obs", "icon": "com.obsproject.Studio" }
 ]

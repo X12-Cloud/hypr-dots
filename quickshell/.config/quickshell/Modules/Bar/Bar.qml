@@ -14,7 +14,8 @@ PanelWindow {
     Procs { id: localProcs }
 
     // ---------------- Date/Time Logic ----------------
-    property string currentTime: ""
+    property string currentTimeDate: ""
+    property string currentTimeClock: ""
 
     Timer {
         id: timeUpdater
@@ -23,8 +24,8 @@ PanelWindow {
         repeat: true
         onTriggered: {
             var now = new Date();
-            currentTime = Qt.formatDate(now, "MMM d, yy  |  ")
-                        + Qt.formatTime(now, "h:mm:ss AP");
+            currentTimeDate = Qt.formatDate(now, "MMM d, yy");
+            currentTimeClock = Qt.formatTime(now, "h:mm:ss AP");
         }
     }
     Component.onCompleted: timeUpdater.triggered()
@@ -61,7 +62,7 @@ PanelWindow {
                     id: pill
                     radius: 999
                     height: 30
-                    width: modelData.active ? 32 : 28 // 46 : 30
+                    width: modelData.active ? 32 : 28 
                     color: modelData.active 
                            ? (panel.shellContext ? panel.shellContext.accentNormal : "#D6BEFA") 
                            : "#262130"
@@ -98,38 +99,118 @@ PanelWindow {
             }
         }
 
-        // ---------------- Time Widget (Clickable) ----------------
-        Rectangle {
-            id: timeContainer
-            radius: 30
-            height: 32
-            color: "#2C2C2E"  // translucent grey
-            border.width: 0
+        // ---------------- System Status Clusters (Far Right) ----------------
+        Row {
+            id: systemControlsGroup
+            spacing: 8
             anchors {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
                 rightMargin: 12
             }
-            width: timeDisplay.contentWidth + 24
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: rightSidebar.active = !rightSidebar.active
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
+            // 1. Standalone Clock/Date Capsule
+            Rectangle {
+                id: timeContainer
+                radius: 30
+                height: 32
+                color: "#2C2C2E"
+                border.width: 0
+                width: timeLayout.implicitWidth + 24
+
+                Row {
+                    id: timeLayout
+                    anchors.centerIn: parent
+                    spacing: 8
+
+                    Text {
+                        text: panel.currentTimeDate
+                        color: "#ECECEC"
+                        font.pixelSize: 14
+                        font.family: "Inter, Roboto, sans-serif"
+                        font.weight: Font.Medium
+                    }
+                    Text {
+                        text: "|"
+                        color: "#48484A"  // Dimmed, subtle grey divider line
+                        font.pixelSize: 14
+                        font.family: "Inter, Roboto, sans-serif"
+                    }
+                    Text {
+                        text: panel.currentTimeClock
+                        color: "#ECECEC"
+                        font.pixelSize: 14
+                        font.family: "Inter, Roboto, sans-serif"
+                        font.weight: Font.Medium
+                    }
+                }
             }
 
-            Text {
-                id: timeDisplay
-                text: panel.currentTime
-                anchors.centerIn: parent
-                color: "#ECECEC"
-                font.pixelSize: 16
-                font.family: "Inter, Roboto, sans-serif"
+            // 2. Mobile-Style Unified Status Capsule (WiFi + BT + Vol)
+            Rectangle {
+                id: statusTrayContainer
+                radius: 30
+                height: 32
+                color: "#2C2C2E"
+                border.width: 0
+                width: statusTrayLayout.implicitWidth + 24
+
+                // Entire tray handles triggering the sidebar
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: rightSidebar.active = !rightSidebar.active
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                Row {
+                    id: statusTrayLayout
+                    anchors.centerIn: parent
+                    spacing: 12
+
+                    // WiFi Icon
+                    Text {
+                        font.family: "Material Symbols Rounded"
+                        text: localProcs.currentSsid !== "No WiFi" ? "\ue63e" : "\ue642"
+                        font.pixelSize: 16
+                        color: localProcs.currentSsid !== "No WiFi" ? "#ECECEC" : "#636366"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    // Bluetooth Icon
+                    Text {
+                        font.family: "Material Symbols Rounded"
+                        text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a7" : "\ue1a9"
+                        font.pixelSize: 16
+                        color: localProcs.currentBtDevice !== "Disconnected" ? "#ECECEC" : "#636366"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    // Volume Block (Icon + Percentage)
+                    Row {
+                        spacing: 4
+                        anchors.verticalCenter: parent.verticalCenter
+                        
+                        Text {
+                            font.family: "Material Symbols Rounded"
+                            text: localProcs.currentVolume === 0 ? "\ue04f" : (localProcs.currentVolume < 0.4 ? "\ue04d" : "\ue050")
+                            font.pixelSize: 16
+                            color: "#ECECEC"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Text {
+                            text: Math.round(localProcs.currentVolume * 100) + "%"
+                            color: "#ECECEC"
+                            font.pixelSize: 12
+                            font.family: "Inter, Roboto, sans-serif"
+                            font.weight: Font.Medium
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
             }
         }
-
-        // ---------------- Media ----------------
+        // ---------------- Media Capsule (Far Left) ----------------
         Rectangle {
             id: mediaBar
             radius: 30
@@ -142,7 +223,7 @@ PanelWindow {
                 leftMargin: 12
             }
             width: mediaContent.contentWidth + 24
-            visible: true
+            visible: localProcs.trackTitle !== "Stopped" && localProcs.trackTitle !== "Nothing Playing"
 
             MouseArea {
                 anchors.fill: parent
@@ -155,7 +236,7 @@ PanelWindow {
                 text: localProcs.trackTitle
                 anchors.centerIn: parent
                 color: "#ECECEC"
-                font.pixelSize: 16
+                font.pixelSize: 14
                 font.family: "Inter, Roboto, sans-serif"
             }
         }

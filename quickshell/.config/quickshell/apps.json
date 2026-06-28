@@ -1,4 +1,6 @@
 [
+  { "name": "Spacedrive", "exec": "spacedrive", "icon": "spacedrive" }
+,
   { "name": "Qt Assistant", "exec": "assistant6", "icon": "assistant" }
 ,
   { "name": "Avahi Zeroconf Browser", "exec": "/usr/bin/avahi-discover", "icon": "network-wired" }
@@ -14,6 +16,8 @@
   { "name": "Avahi VNC Server Browser", "exec": "/usr/bin/bvnc", "icon": "network-wired" }
 ,
   { "name": "CMake", "exec": "cmake-gui", "icon": "CMakeSetup" }
+,
+  { "name": "GPU Screen Recorder", "exec": "gpu-screen-recorder-gtk", "icon": "com.dec05eba.gpu_screen_recorder" }
 ,
   { "name": "OBS Studio", "exec": "obs", "icon": "com.obsproject.Studio" }
 ,
@@ -33,6 +37,8 @@
 ,
   { "name": "GNU Image Manipulation Program", "exec": "gimp-3.2", "icon": "gimp" }
 ,
+  { "name": "GPU Screen Recorder", "exec": "gsr-ui launch-hide-announce", "icon": "gpu-screen-recorder" }
+,
   { "name": "Htop", "exec": "htop", "icon": "htop" }
 ,
   { "name": "OpenJDK Java 21 Console", "exec": "/usr/lib/jvm/java-21-openjdk/bin/jconsole", "icon": "java21-openjdk" }
@@ -42,6 +48,8 @@
   { "name": "kitty", "exec": "kitty", "icon": "kitty" }
 ,
   { "name": "Qt Linguist", "exec": "linguist6", "icon": "linguist" }
+,
+  { "name": "Hardware Locality lstopo", "exec": "lstopo", "icon": "hwloc" }
 ,
   { "name": "Advanced Network Configuration", "exec": "nm-connection-editor", "icon": "preferences-system-network" }
 ,

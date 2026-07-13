@@ -170,7 +170,6 @@ Rectangle {
         }
 
         component SquareButton : Rectangle {
-            // FIX: Added an explicit ID to the component root
             id: squareRoot
             property var shellContext: null
             property string icon: ""
@@ -180,8 +179,7 @@ Rectangle {
             Layout.preferredWidth: 60
             Layout.preferredHeight: 60
             radius: squareRoot.isActive ? 20 : 30
-            // FIX: Safe lookup via the squareRoot ID
-            color: squareRoot.isActive 
+            color: squareRoot.isActive
                    ? (squareRoot.shellContext ? squareRoot.shellContext.accentNormal : "#D6BEFA") 
                    : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
             Behavior on color { ColorAnimation { duration: 150 } }
@@ -207,7 +205,7 @@ Rectangle {
             WidePillButton {
                 shellContext: settingsRoot.shellContext
                 icon: localProcs.currentSsid.includes("Wired") ? "\ue8be" : "\ue63e"
-                title: "Network"
+                title: "Wi-Fi"
                 label: localProcs.currentSsid
                 isActive: localProcs.currentSsid !== "No WiFi" && localProcs.currentSsid !== "Disconnected"
                 onTrigger: () => { localProcs.run(localProcs.wifiToggle) }

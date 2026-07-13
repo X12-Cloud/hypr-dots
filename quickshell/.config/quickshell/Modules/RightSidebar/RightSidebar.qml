@@ -122,7 +122,10 @@ PanelWindow {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: Quickshell.reload(Quickshell.configPath)
+                                onClicked: {
+                                    Quickshell.reload(Quickshell.configPath)
+                                    Hyprland.dispatch("exec hyprctl reload")
+                                }
                             }
                         }
 

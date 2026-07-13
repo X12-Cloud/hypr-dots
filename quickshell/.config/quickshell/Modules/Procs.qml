@@ -22,7 +22,7 @@ Item {
     property bool isDndActive: root.globalDnd
     property bool isNightLightActive: false
     property bool keepSysAwake: false
-    
+
     // Core Metrics
     property real cpuUsage: 0.0
     property real memUsage: 0.0
@@ -179,11 +179,28 @@ Item {
 
     Process {
         id: getSsid
-        command: ["sh", "-c", "nmcli -t -f NAME connection show --active | head -n 1"]
+        command: [
+            "sh", "-c", 
+            "ssid=$(nmcli -t -f ACTIVE,SSID dev wifi | grep '^yes' | cut -d: -f2); " +
+            "if [ -z \"$ssid\" ] && ip route | grep -q '^default'; then ssid='Ethernet'; fi; " +
+            "state=$(nmcli networking connectivity); " +
+            "echo \"$ssid||$state\""
+        ]
         stdout: SplitParser {
             onRead: (data) => {
-                let name = data.trim();
-                procs.currentSsid = name.length > 0 ? name : "No WiFi";
+                let parts = data.trim().split("||");
+                let ssidName = parts[0] || "";
+                let networkState = parts[1] || "none";
+
+                if (ssidName.length === 0 || networkState === "none") {
+                    procs.currentSsid = "Disconnected";
+                } else if (networkState === "limited") {
+                    procs.currentSsid = ssidName + " (No Internet)";
+                } else if (networkState === "portal") {
+                    procs.currentSsid = ssidName + " (Sign In)";
+                } else {
+                    procs.currentSsid = ssidName;
+                }
             }
         }
     }

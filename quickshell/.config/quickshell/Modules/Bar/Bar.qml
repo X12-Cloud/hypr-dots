@@ -146,7 +146,6 @@ PanelWindow {
                 }
             }
 
-            // 2. Mobile-Style Unified Status Capsule (WiFi + BT + Vol)
             Rectangle {
                 id: statusTrayContainer
                 radius: 30
@@ -155,7 +154,6 @@ PanelWindow {
                 border.width: 0
                 width: statusTrayLayout.implicitWidth + 24
 
-                // Entire tray handles triggering the sidebar
                 MouseArea {
                     anchors.fill: parent
                     onClicked: rightSidebar.active = !rightSidebar.active
@@ -190,7 +188,7 @@ PanelWindow {
                     Row {
                         spacing: 4
                         anchors.verticalCenter: parent.verticalCenter
-                        
+
                         Text {
                             font.family: "Material Symbols Rounded"
                             text: localProcs.currentVolume === 0 ? "\ue04f" : (localProcs.currentVolume < 0.4 ? "\ue04d" : "\ue050")
@@ -222,8 +220,8 @@ PanelWindow {
                 verticalCenter: parent.verticalCenter
                 leftMargin: 12
             }
-            width: mediaContent.contentWidth + 24
-            visible: localProcs.trackTitle !== "Stopped" && localProcs.trackTitle !== "Nothing Playing"
+            width: 200
+            visible: true
 
             MouseArea {
                 anchors.fill: parent
@@ -231,12 +229,16 @@ PanelWindow {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
             }
+
             Text {
                 id: mediaContent
-                text: localProcs.trackTitle
+                text: localProcs.isPlaying ? localProcs.trackTitle : "Nothing Playing"
                 anchors.centerIn: parent
+                width: parent.width - 24
+                horizontalAlignment: Text.AlignHCenter
                 color: "#ECECEC"
                 font.pixelSize: 14
+                elide: Text.ElideRight
                 font.family: "Inter, Roboto, sans-serif"
             }
         }

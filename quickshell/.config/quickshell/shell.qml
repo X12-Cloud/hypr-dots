@@ -35,11 +35,12 @@ ShellRoot {
     }
 
     NotificationServer {
-        id: notificationsService;
-        keepOnReload: true;
+        id: notificationsService
+        keepOnReload: true
         onNotification: (n) => {
             n.tracked = true
             n.timestamp = new Date()
+            notificationsService.trackedNotifications.insert(0, n)
         }
     }
 

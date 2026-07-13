@@ -1,15 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Effects
 import "./../"
 
 Rectangle {
     id: root
     Layout.fillWidth: true
-    implicitHeight: Math.max(165, mainContentLayout.implicitHeight + 32)
-    radius: 20
-    color: "#2C2C2E"
+    implicitHeight: mainContentLayout.implicitHeight + 32
+    radius: 24
+    color: "transparent" // "#161F30"
     clip: true
 
     property alias active: root.visible
@@ -19,44 +18,27 @@ Rectangle {
         let totalSeconds = Math.floor(microseconds / 1000000);
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = totalSeconds % 60;
-
-        let paddedSeconds = seconds < 10 ? "0" + seconds : seconds;
-        let paddedMinutes = minutes < 10 ? "0" + minutes : minutes;
-
-        return paddedMinutes + ":" + paddedSeconds;
+        return minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
     }
 
+    // Blurred Backdrop Artwork Stack
     Rectangle {
         anchors.fill: parent
-        radius: 20
-        color: "#2C2C2E"
+        radius: 24
+        color: "#0C1625"
         clip: true
 
         Image {
             id: bgArt
             anchors.fill: parent
-            anchors.margins: 4
             source: {
                 if (localProcs.trackArt === "") return "../images/blackhole.jpg";
-                if (localProcs.trackArt.startsWith("/")) return "file://" + localProcs.trackArt;
-                return localProcs.trackArt;
+                return localProcs.trackArt.startsWith("/") ? "file://" + localProcs.trackArt : localProcs.trackArt;
             }
             fillMode: Image.PreserveAspectCrop
-            opacity: 0.25
+            opacity: 0.22 
             asynchronous: true
             cache: false
-
-            onStatusChanged: {
-                if (status === Image.Error) {
-                    console.log("Image Error: " + source + " | Status: " + status)
-                }
-            }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.2
         }
     }
 
@@ -65,156 +47,201 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.margins: 16
-        spacing: 8
-        implicitHeight: childrenRect.height
+        anchors.margins: 18
+        spacing: 14
 
         RowLayout {
             Layout.fillWidth: true
-            Text {
-                text: formatTime(localProcs.trackPosUs)
-                color: "#CAC4D0"
-                font.pointSize: 9
-            }
-            Text { text: "/"; color: "#CAC4D0"}
-            Text {
-                text: formatTime(localProcs.trackLengthUs)
-                color: "#CAC4D0"
-                font.pointSize: 9
-            }
-            Item { Layout.fillWidth: true }
+
             Rectangle {
-                height: 18
-                width: deviceText.implicitWidth + 30
-                radius: 9
-                // UPDATED: Dynamic context accent color with fallback
-                color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
+                height: 22
+                width: deviceText.implicitWidth + 28
+                radius: 11
+                color: root.shellContext ? root.shellContext.surfacePill : "#0C1625"
+                border.color: root.shellContext ? root.shellContext.borderPill : "#1F314A"
+                border.width: 1
+
                 RowLayout {
                     anchors.centerIn: parent
-                    spacing: 4
+                    spacing: 6
                     Text {
                         font.family: "Material Symbols Rounded"
                         text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a8" : "\uf01f"
-                        font.pointSize: 8
-                        color: "#000000"
+                        font.pointSize: 9
+                        color: root.shellContext ? root.shellContext.accentNormal : "#8AB4F8"
                     }
                     Text {
                         id: deviceText
                         text: localProcs.currentBtDevice !== "Disconnected" ? localProcs.currentBtDevice : "Speakers"
-                        color: "#000000"
-                        font.pointSize: 7
+                        color: root.shellContext ? root.shellContext.textPrimary : "#E2E8F0"
+                        font.pointSize: 8
                         font.weight: Font.Medium
                     }
                 }
             }
+            Item { Layout.fillWidth: true }
         }
 
         RowLayout {
             Layout.fillWidth: true
+            spacing: 12
+
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 2
+                spacing: 4
+
                 Text {
                     Layout.fillWidth: true
-                    text: localProcs.trackTitle
-                    color: "white"
-                    font.pointSize: 11
+                    text: localProcs.trackTitle !== "" ? localProcs.trackTitle : "Not Playing"
+                    color: root.shellContext ? root.shellContext.textPrimary : "#E2E8F0"
+                    font.pointSize: 14
                     font.weight: Font.Bold
-                    wrapMode: Text.WordWrap
-                    maximumLineCount: 2
+                    font.family: "sans-serif"
                     elide: Text.ElideRight
+                    maximumLineCount: 1
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: localProcs.trackArtist
-                    color: "#CAC4D0"
-                    font.pointSize: 9
+                    text: localProcs.trackArtist !== "" ? localProcs.trackArtist : "Media Source"
+                    color: root.shellContext ? root.shellContext.textMuted : "#64748B"
+                    font.pointSize: 10
+                    font.family: "sans-serif"
                     elide: Text.ElideRight
                 }
             }
-            Rectangle {
-                width: 50; height: 50; radius: 20
-                // UPDATED: Dynamic context accent color with fallback
-                color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
-                scale: playMouse.pressed ? 0.9 : (playMouse.containsMouse ? 1.05 : 1.0)
-                Behavior on scale { NumberAnimation { duration: 100 } }
-                Text {
-                    anchors.centerIn: parent
-                    text: localProcs.isPlaying ? "\ue034" : "\ue037"
-                    font.pointSize: 22
-                    font.family: "Material Symbols Rounded"
-                    color: "#000000"
+
+            // Inline Navigation Control Group
+            RowLayout {
+                spacing: 8
+                Layout.alignment: Qt.AlignVCenter
+
+                // Previous Track Button
+                Rectangle {
+                    width: 36; height: 36
+                    radius: 12
+                    color: prevMouse.containsMouse ? "#1F314A" : "transparent"
+
+                    Behavior on color { ColorAnimation { duration: 180 } }
+                    scale: prevMouse.pressed ? 0.92 : 1.0
+                    Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                    Text { 
+                        anchors.centerIn: parent 
+                        text: "\ue045" 
+                        font.pointSize: 16 
+                        color: prevMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") : "#E2E8F0"
+                        font.family: "Material Symbols Rounded"
+                        Behavior on color { ColorAnimation { duration: 140 } }
+                    }
+                    MouseArea {
+                        id: prevMouse; anchors.fill: parent; hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: localProcs.run(localProcs.mediaPrev)
+                    }
                 }
-                MouseArea {
-                    id: playMouse; anchors.fill: parent; hoverEnabled: true
-                    onClicked: localProcs.run(localProcs.mediaToggle)
+
+                // Play/Pause Button
+                Rectangle {
+                    id: playSquircle
+                    width: 46; height: 46
+                    radius: 18
+                    color: root.shellContext ? root.shellContext.accentNormal : "#8AB4F8"
+
+                    scale: playMouse.pressed ? 0.90 : (playMouse.containsMouse ? 1.06 : 1.0)
+                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: localProcs.isPlaying ? "\ue034" : "\ue037"
+                        font.pointSize: 20
+                        font.family: "Material Symbols Rounded"
+                        color: "#050B14"
+                    }
+                    MouseArea {
+                        id: playMouse; anchors.fill: parent; hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: localProcs.run(localProcs.mediaToggle)
+                    }
+                }
+
+                // Next Track Button
+                Rectangle {
+                    width: 36; height: 36
+                    radius: 12
+                    color: nextMouse.containsMouse ? "#1F314A" : "transparent"
+
+                    Behavior on color { ColorAnimation { duration: 180 } }
+                    scale: nextMouse.pressed ? 0.92 : 1.0
+                    Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                    Text { 
+                        anchors.centerIn: parent 
+                        text: "\ue044" 
+                        font.pointSize: 16 
+                        color: nextMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") : "#E2E8F0"
+                        font.family: "Material Symbols Rounded"
+                        Behavior on color { ColorAnimation { duration: 140 } }
+                    }
+                    MouseArea {
+                        id: nextMouse; anchors.fill: parent; hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: localProcs.run(localProcs.mediaNext)
+                    }
                 }
             }
         }
 
-        RowLayout {
+        ColumnLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
-            spacing: 0
+            spacing: 4
 
-            Rectangle {
-                width: 40; height: 40; radius: 20
-                color: prevMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
-                Text { anchors.centerIn: parent; text: "\ue045"; font.pointSize: 18; color: "white"; font.family: "Material Symbols Rounded" }
-                MouseArea {
-                    id: prevMouse; anchors.fill: parent; hoverEnabled: true
-                    onClicked: localProcs.run(localProcs.mediaPrev)
-                }
-            }
             Slider {
                 id: trackProgress
                 Layout.fillWidth: true
-                Layout.preferredHeight: 4
+                Layout.preferredHeight: 6
                 from: 0
                 to: 100
                 value: localProcs.percentage
-                enabled: false
+                enabled: false 
 
                 background: Rectangle {
                     x: trackProgress.leftPadding
                     y: trackProgress.topPadding + trackProgress.availableHeight / 2 - height / 2
-                    implicitWidth: 200
-                    implicitHeight: parent.height
                     width: trackProgress.availableWidth
-                    height: implicitHeight
-                    radius: 12
-                    color: "#3A3A3C"
+                    height: 6
+                    radius: 3
+                    color: "#1F314A"
 
                     Rectangle {
                         width: trackProgress.visualPosition * parent.width
                         height: parent.height
-                        // UPDATED: Dynamic context accent color with fallback
-                        color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
-                        radius: 6
+                        color: root.shellContext ? root.shellContext.accentNormal : "#8AB4F8"
+                        radius: 3
                     }
                 }
+
                 handle: Rectangle {
                     x: trackProgress.leftPadding + trackProgress.visualPosition * (trackProgress.availableWidth - width)
                     y: trackProgress.topPadding + trackProgress.availableHeight / 2 - height / 2
-                    implicitWidth: 5
-                    implicitHeight: 20
-                    radius: 20
-                    // UPDATED: Dynamic context accent color with fallback
-                    color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
-                    border.color: trackProgress.pressed ? "#FFFFFF" : "#E6E1E5"
-                    border.width: 2
-
-                    Behavior on scale { NumberAnimation { duration: 100 } }
-                    scale: trackProgress.hovered ? 1.2 : 1.0
+                    implicitWidth: 4
+                    implicitHeight: 12
+                    radius: 2
+                    color: "#E2E8F0"
                 }
             }
-            Rectangle {
-                width: 40; height: 40; radius: 20
-                color: nextMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
-                Text { anchors.centerIn: parent; text: "\ue044"; font.pointSize: 18; color: "white"; font.family: "Material Symbols Rounded" }
-                MouseArea {
-                    id: nextMouse; anchors.fill: parent; hoverEnabled: true
-                    onClicked: localProcs.run(localProcs.mediaNext)
+
+            RowLayout {
+                Layout.fillWidth: true
+                Text {
+                    text: formatTime(localProcs.trackPosUs)
+                    color: root.shellContext ? root.shellContext.textMuted : "#64748B"
+                    font.pointSize: 8
+                }
+                Item { Layout.fillWidth: true }
+                Text {
+                    text: formatTime(localProcs.trackLengthUs)
+                    color: root.shellContext ? root.shellContext.textMuted : "#64748B"
+                    font.pointSize: 8
                 }
             }
         }

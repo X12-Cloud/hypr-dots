@@ -31,3 +31,5 @@ fastfetch -c minimal
 
 # Custom aliases
 source (dirname (status filename))/aliases.fish
+
+fish_add_path /home/x12/.spicetify

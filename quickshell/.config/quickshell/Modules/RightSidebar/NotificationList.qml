@@ -114,6 +114,7 @@ Rectangle {
             Layout.fillWidth: true; Layout.fillHeight: true
             currentIndex: showUtils ? 2 : (notifView.count > 0 ? 0 : 1)
 
+            // Notifications list
             ScrollView {
                 clip: true
                 ListView {
@@ -283,7 +284,7 @@ Rectangle {
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "\ue157" // Link / external open arrow glyph
+                                        text: "\ue157"
                                         color: "#E6E1E5"
                                         font.pointSize: 12
                                         font.family: "Material Symbols Rounded"
@@ -299,9 +300,49 @@ Rectangle {
                 }
             }
 
+            // DND mode view
             ColumnLayout {
                 spacing: 12
                 Layout.fillWidth: true; Layout.fillHeight: true
+
+                Rectangle {
+                    id: dndWarningBanner
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 35
+                    Layout.rightMargin: 35
+                    height: 28
+                    radius: 14
+                    color: "#3A3A3C"
+                    border.color: "#4A4A4C"
+                    border.width: 1
+                    visible: shellContext && shellContext.globalDnd
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 8
+
+                        Text {
+                            text: "\ueffb" 
+                            font.family: "Material Symbols Rounded"
+                            font.pointSize: 11
+                            color: root.shellContext ? root.shellContext.accentNormal : "#D6BEFA"
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+
+                        Text {
+                            text: "Do not disturb is on until you turn it off."
+                            font.family: "sans-serif"
+                            font.pointSize: 9.5
+                            font.weight: Font.Normal
+                            color: "#E6E1E5"
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+                    }
+                }
+
                 Item { Layout.fillWidth: true }
                 Item { Layout.fillHeight: true }
 
@@ -318,6 +359,7 @@ Rectangle {
                 Item { Layout.fillHeight: true }
             }
 
+            // System utilities
             UtilsCard {
                 id: utilsCard
                 shellContext: root.shellContext

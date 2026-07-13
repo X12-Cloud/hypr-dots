@@ -39,6 +39,8 @@
 ,
   { "name": "GPU Screen Recorder", "exec": "gsr-ui launch-hide-announce", "icon": "gpu-screen-recorder" }
 ,
+  { "name": "LSHW", "exec": "/usr/sbin/gtk-lshw", "icon": "/usr/share/lshw/artwork/logo.svg" }
+,
   { "name": "Htop", "exec": "htop", "icon": "htop" }
 ,
   { "name": "OpenJDK Java 21 Console", "exec": "/usr/lib/jvm/java-21-openjdk/bin/jconsole", "icon": "java21-openjdk" }
@@ -48,6 +50,8 @@
   { "name": "kitty", "exec": "kitty", "icon": "kitty" }
 ,
   { "name": "Qt Linguist", "exec": "linguist6", "icon": "linguist" }
+,
+  { "name": "LocalSend", "exec": "localsend", "icon": "localsend" }
 ,
   { "name": "Hardware Locality lstopo", "exec": "lstopo", "icon": "hwloc" }
 ,
@@ -66,6 +70,8 @@
   { "name": "Dolphin", "exec": "dolphin", "icon": "org.kde.dolphin" }
 ,
   { "name": "Kate", "exec": "kate -b", "icon": "kate" }
+,
+  { "name": "Kdenlive", "exec": "kdenlive", "icon": "kdenlive" }
 ,
   { "name": "Konsole", "exec": "konsole", "icon": "utilities-terminal" }
 ,
@@ -92,6 +98,8 @@
   { "name": "Steam", "exec": "/usr/bin/steam", "icon": "steam" }
 ,
   { "name": "Winetricks", "exec": "winetricks --gui", "icon": "winetricks" }
+,
+  { "name": "Yazi File Manager", "exec": "yazi", "icon": "yazi" }
 ,
   { "name": "Zen Browser", "exec": "/opt/zen-browser-bin/zen-bin", "icon": "zen-browser" }
 ,

@@ -32,7 +32,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width
-        color: "#1C1C1E"
+        color: shellContext ? shellContext.bgBase : "#161618"
         radius: 20
         x: sidebar.active ? 0 : sidebar.width
 
@@ -61,7 +61,7 @@ PanelWindow {
                     Layout.preferredWidth: 160
                     Layout.fillHeight: true
                     radius: 90
-                    color: "#2C2C2E"
+                    color: shellContext ? shellContext.surfacePill : "#1C1C1E"
 
                     RowLayout {
                         anchors.fill: parent
@@ -72,14 +72,14 @@ PanelWindow {
                         Text {
                             font.family: "Font Awesome 6 Free"
                             text: "\uf17c"
-                            color: "#D6BEFA"
+                            color: shellContext ? shellContext.accentNormal : "#8AB4F8"
                             font.pointSize: 11
                             font.weight: Font.Bold
                             Layout.alignment: Qt.AlignVCenter
                         }
                         Text {
                             text: localProcs.uptime
-                            color: "#E6E1E5"
+                            color: shellContext ? shellContext.textPrimary : "#E6E1E5"
                             font.pointSize: 10.5
                             font.weight: Font.Bold
                             Layout.fillWidth: true
@@ -95,7 +95,7 @@ PanelWindow {
                     Layout.preferredWidth: 96
                     Layout.fillHeight: true
                     radius: 23
-                    color: "#2C2C2E"
+                    color: shellContext ? shellContext.surfacePill : "#1C1C1E"
 
                     RowLayout {
                         anchors.fill: parent
@@ -113,7 +113,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 font.family: "Material Symbols Rounded"
                                 text: "\uf053"
-                                color: "#E6E1E5"
+                                color: shellContext ? shellContext.textPrimary : "#E6E1E5"
                                 font.pointSize: 13
                             }
 
@@ -140,7 +140,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 font.family: "Material Symbols Rounded"
                                 text: "\ue8ac"
-                                color: powerMouse.containsMouse ? "#1C1C1E" : "#E6E1E5"
+                                color: powerMouse.containsMouse ? (shellContext ? shellContext.surfacePill : "#1C1C1E") : (shellContext ? shellContext.textPrimary : "#E6E1E5")
                                 font.pointSize: 13
                             }
 

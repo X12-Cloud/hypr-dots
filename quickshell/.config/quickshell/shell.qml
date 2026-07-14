@@ -11,20 +11,31 @@ import "./Modules/Lock/" as LS
 ShellRoot {
     id: root
 
+    ShellSettings {
+        id: persistentSettings
+    }
+
+    property var customAppModel: persistentSettings.customApps
+
     // Colours
-    readonly property color bgBase: "#050B14"
-    readonly property color surfacePill: "#0C1625"
-    readonly property color borderPill: "#1F314A"
-    readonly property color accentNormal: "#8AB4F8" // "#D6BEFA"
-    readonly property color textPrimary: "#E2E8F0"
-    readonly property color textMuted: "#64748B"
+    readonly property color bgBase: persistentSettings.bgBase
+    readonly property color surfacePill: persistentSettings.surfacePill
+    readonly property color borderPill: persistentSettings.borderPill
+    readonly property color accentNormal: persistentSettings.accentNormal
+    readonly property color textPrimary: persistentSettings.textPrimary
+    readonly property color textMuted: persistentSettings.textMuted
 
-    readonly property color errorAccent: "#F2B8B5"
-    readonly property color errorSurface: "#2C161A"
+    readonly property color errorAccent: persistentSettings.errorAccent
+    readonly property color errorSurface: persistentSettings.errorSurface
 
-    Loader { active: true; sourceComponent: Bar{ shellContext: root } }
+    // Dnd
+    property alias globalDnd: persistentSettings.globalDnd
 
-    property bool globalDnd: false
+    // Images
+    property alias backgroundImage: persistentSettings.backgroundImage
+    property alias placeholderImage: persistentSettings.placeholderImage
+
+    Loader { active: true; sourceComponent: Bar { shellContext: root } }
     RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig; shellContext: root; }
 

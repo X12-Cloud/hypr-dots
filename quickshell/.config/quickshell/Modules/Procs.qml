@@ -150,10 +150,7 @@ Item {
         }
     }
 
-    Process {
-        id: dndToggleProcess
-        command: ["sh", "-c", "makoctl mode | grep -q 'dnd' && makoctl mode -r dnd || makoctl mode -a dnd"]
-    }
+    Process { id: dndToggleProcess }
     Process { id: nightLightToggle }
     Process {
         id: awakeToggle

@@ -16,7 +16,7 @@ Item {
 
         Text {
             text: "System Analytics"
-            color: "#E6E1E5"
+            color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
             font.pointSize: 14
             font.weight: Font.DemiBold
             Layout.bottomMargin: 2
@@ -28,7 +28,9 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: cpuMouse.containsMouse ? 94 : 56
             radius: 16
-            color: cpuMouse.containsMouse ? "#424245" : "#323234"
+            color: cpuMouse.containsMouse 
+                ? (utilsCard.shellContext ? utilsCard.shellContext.borderPill : "#252528") 
+                : (utilsCard.shellContext ? utilsCard.shellContext.surfacePill : "#1C1C1E")
             clip: true 
 
             Behavior on Layout.preferredHeight { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
@@ -47,12 +49,22 @@ Item {
                         text: "memory"
                         font.family: "Material Symbols Rounded"
                         font.pointSize: 20
-                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                     }
 
-                    Text { text: "CPU"; color: "#E6E1E5"; font.pointSize: 11; font.weight: Font.Medium }
+                    Text { 
+                        text: "CPU"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.weight: Font.Medium 
+                    }
                     Item { Layout.fillWidth: true }
-                    Text { text: Math.round(sysProcs.cpuUsage) + "%"; color: "#E6E1E5"; font.pointSize: 11; font.bold: true }
+                    Text { 
+                        text: Math.round(sysProcs.cpuUsage) + "%"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.bold: true 
+                    }
                 }
 
                 ColumnLayout {
@@ -66,13 +78,13 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 5
                         radius: 2.5
-                        color: "#222224"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.bgBase : "#161618"
 
                         Rectangle {
                             width: (sysProcs.cpuUsage / 100) * parent.width
                             height: parent.height
                             radius: 2.5
-                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                         }
                     }
 
@@ -80,13 +92,13 @@ Item {
                         Layout.fillWidth: true
                         Text { 
                             text: "Clock Speed: " + (sysProcs.cpuFreq ? sysProcs.cpuFreq : "Dynamic") 
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                         Item { Layout.fillWidth: true }
                         Text { 
                             text: "Load Avg: " + (sysProcs.loadAvg ? sysProcs.loadAvg : "Nominal")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                     }
@@ -101,7 +113,9 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: memMouse.containsMouse ? 94 : 56
             radius: 16
-            color: memMouse.containsMouse ? "#424245" : "#323234"
+            color: memMouse.containsMouse 
+                ? (utilsCard.shellContext ? utilsCard.shellContext.borderPill : "#252528") 
+                : (utilsCard.shellContext ? utilsCard.shellContext.surfacePill : "#1C1C1E")
             clip: true
 
             Behavior on Layout.preferredHeight { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
@@ -120,12 +134,22 @@ Item {
                         text: "memory_alt"
                         font.family: "Material Symbols Rounded"
                         font.pointSize: 20
-                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                     }
 
-                    Text { text: "RAM"; color: "#E6E1E5"; font.pointSize: 11; font.weight: Font.Medium }
+                    Text { 
+                        text: "RAM"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.weight: Font.Medium 
+                    }
                     Item { Layout.fillWidth: true }
-                    Text { text: Math.round(sysProcs.memUsage) + "%"; color: "#E6E1E5"; font.pointSize: 11; font.bold: true }
+                    Text { 
+                        text: Math.round(sysProcs.memUsage) + "%"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.bold: true 
+                    }
                 }
 
                 ColumnLayout {
@@ -139,13 +163,13 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 5
                         radius: 2.5
-                        color: "#222224"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.bgBase : "#161618"
 
                         Rectangle {
                             width: (sysProcs.memUsage / 100) * parent.width
                             height: parent.height
                             radius: 2.5
-                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                         }
                     }
 
@@ -153,13 +177,13 @@ Item {
                         Layout.fillWidth: true
                         Text { 
                             text: "Available Cache: " + (sysProcs.memBuffers ? sysProcs.memBuffers : "Optimized")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                         Item { Layout.fillWidth: true }
                         Text { 
                             text: "Swap Use: " + (sysProcs.swapUsage ? sysProcs.swapUsage + "%" : "0%")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                     }
@@ -174,7 +198,9 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: tempMouse.containsMouse ? 94 : 56
             radius: 16
-            color: tempMouse.containsMouse ? "#424245" : "#323234"
+            color: tempMouse.containsMouse 
+                ? (utilsCard.shellContext ? utilsCard.shellContext.borderPill : "#252528") 
+                : (utilsCard.shellContext ? utilsCard.shellContext.surfacePill : "#1C1C1E")
             clip: true
 
             Behavior on Layout.preferredHeight { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
@@ -193,12 +219,22 @@ Item {
                         text: "device_thermostat"
                         font.family: "Material Symbols Rounded"
                         font.pointSize: 20
-                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                     }
 
-                    Text { text: "Thermal Status"; color: "#E6E1E5"; font.pointSize: 11; font.weight: Font.Medium }
+                    Text { 
+                        text: "Thermal Status"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.weight: Font.Medium 
+                    }
                     Item { Layout.fillWidth: true }
-                    Text { text: Math.round(sysProcs.cpuTemp) + "°C"; color: "#E6E1E5"; font.pointSize: 11; font.bold: true }
+                    Text { 
+                        text: Math.round(sysProcs.cpuTemp) + "°C"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.bold: true 
+                    }
                 }
 
                 ColumnLayout {
@@ -212,13 +248,15 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 5
                         radius: 2.5
-                        color: "#222224"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.bgBase : "#161618"
 
                         Rectangle {
                             width: Math.min((sysProcs.cpuTemp / 100), 1) * parent.width
                             height: parent.height
                             radius: 2.5
-                            color: sysProcs.cpuTemp > 75 ? "#FF8989" : (utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA")
+                            color: sysProcs.cpuTemp > 75 
+                                ? (utilsCard.shellContext ? utilsCard.shellContext.errorAccent : "#FFB4AB") 
+                                : (utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8")
                         }
                     }
 
@@ -226,13 +264,15 @@ Item {
                         Layout.fillWidth: true
                         Text { 
                             text: "Governor: " + (sysProcs.cpuGovernor ? sysProcs.cpuGovernor : "Performance")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                         Item { Layout.fillWidth: true }
                         Text { 
                             text: sysProcs.cpuTemp > 80 ? "Throttling Risk" : "Stable"
-                            color: sysProcs.cpuTemp > 80 ? "#FF8989" : "#CAC4D0"
+                            color: sysProcs.cpuTemp > 80 
+                                ? (utilsCard.shellContext ? utilsCard.shellContext.errorAccent : "#FFB4AB") 
+                                : (utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0")
                             font.pointSize: 9
                             font.weight: sysProcs.cpuTemp > 80 ? Font.Bold : Font.Normal
                         }
@@ -248,7 +288,9 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: diskMouse.containsMouse ? 94 : 56
             radius: 16
-            color: diskMouse.containsMouse ? "#424245" : "#323234"
+            color: diskMouse.containsMouse 
+                ? (utilsCard.shellContext ? utilsCard.shellContext.borderPill : "#252528") 
+                : (utilsCard.shellContext ? utilsCard.shellContext.surfacePill : "#1C1C1E")
             clip: true
 
             Behavior on Layout.preferredHeight { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
@@ -267,12 +309,22 @@ Item {
                         text: "hard_drive"
                         font.family: "Material Symbols Rounded"
                         font.pointSize: 20
-                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                     }
 
-                    Text { text: "Storage Pool"; color: "#E6E1E5"; font.pointSize: 11; font.weight: Font.Medium }
+                    Text { 
+                        text: "Storage Pool"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.weight: Font.Medium 
+                    }
                     Item { Layout.fillWidth: true }
-                    Text { text: Math.round(sysProcs.diskUsage) + "%"; color: "#E6E1E5"; font.pointSize: 11; font.bold: true }
+                    Text { 
+                        text: Math.round(sysProcs.diskUsage) + "%"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.textPrimary : "#E6E1E5"
+                        font.pointSize: 11
+                        font.bold: true 
+                    }
                 }
 
                 ColumnLayout {
@@ -286,13 +338,13 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 5
                         radius: 2.5
-                        color: "#222224"
+                        color: utilsCard.shellContext ? utilsCard.shellContext.bgBase : "#161618"
 
                         Rectangle {
                             width: (sysProcs.diskUsage / 100) * parent.width
                             height: parent.height
                             radius: 2.5
-                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#D6BEFA"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.accentNormal : "#8AB4F8"
                         }
                     }
 
@@ -300,13 +352,13 @@ Item {
                         Layout.fillWidth: true
                         Text { 
                             text: "I/O State: " + (sysProcs.diskIO ? sysProcs.diskIO : "Idle")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                         Item { Layout.fillWidth: true }
                         Text { 
                             text: "Mount: " + (sysProcs.diskMountPoint ? sysProcs.diskMountPoint : "[ / ]")
-                            color: "#CAC4D0"
+                            color: utilsCard.shellContext ? utilsCard.shellContext.textMuted : "#CAC4D0"
                             font.pointSize: 9
                         }
                     }

@@ -34,11 +34,13 @@ PanelWindow {
     Rectangle {
         id: bar
         anchors.fill: parent
-        color: "#1C1B1F"  // M3 surface
+
+        color: shellContext ? shellContext.bgBase : "#161618"
         clip: true
         radius: 30
-        border.color: "white"
-        border.width: 0
+
+        border.color: shellContext ? shellContext.borderPill : "#252528"
+        border.width: 1
 
         anchors.topMargin: 3
         anchors.rightMargin: 10
@@ -63,9 +65,11 @@ PanelWindow {
                     radius: 999
                     height: 30
                     width: modelData.active ? 32 : 28 
+
                     color: modelData.active 
-                           ? (panel.shellContext ? panel.shellContext.accentNormal : "#D6BEFA") 
-                           : "#262130"
+                           ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                           : (panel.shellContext ? panel.shellContext.surfacePill : "#1C1C1E")
+
                     scale: modelData.active ? 1.12 : 1.0
                     border.width: 0
 
@@ -81,7 +85,11 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: modelData.id
-                        color: modelData.active ? "#21005D" : "#E6E1E5"
+
+                        color: modelData.active 
+                               ? (panel.shellContext ? panel.shellContext.bgBase : "#161618") 
+                               : (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5")
+
                         font.pixelSize: 14
                         font.family: "Roboto, sans-serif"
                         opacity: modelData.active ? 1.0 : 0.75
@@ -94,7 +102,7 @@ PanelWindow {
             Text {
                 visible: Hyprland.workspaces.length === 0
                 text: "No workspaces"
-                color: "#E6E1E5"
+                color: panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0"
                 font.pixelSize: 14
             }
         }
@@ -109,13 +117,14 @@ PanelWindow {
                 rightMargin: 12
             }
 
-            // 1. Standalone Clock/Date Capsule
+            // Clock/Date Capsule
             Rectangle {
                 id: timeContainer
                 radius: 30
                 height: 32
-                color: "#2C2C2E"
-                border.width: 0
+                color: shellContext ? shellContext.surfacePill : "#1C1C1E"
+                border.color: shellContext ? shellContext.borderPill : "#252528"
+                border.width: 1
                 width: timeLayout.implicitWidth + 24
 
                 Row {
@@ -125,20 +134,20 @@ PanelWindow {
 
                     Text {
                         text: panel.currentTimeDate
-                        color: "#ECECEC"
+                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
                         font.pixelSize: 14
                         font.family: "Inter, Roboto, sans-serif"
                         font.weight: Font.Medium
                     }
                     Text {
                         text: "|"
-                        color: "#48484A"  // Dimmed, subtle grey divider line
+                        color: panel.shellContext ? panel.shellContext.borderPill : "#252528"
                         font.pixelSize: 14
                         font.family: "Inter, Roboto, sans-serif"
                     }
                     Text {
                         text: panel.currentTimeClock
-                        color: "#ECECEC"
+                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
                         font.pixelSize: 14
                         font.family: "Inter, Roboto, sans-serif"
                         font.weight: Font.Medium
@@ -146,15 +155,24 @@ PanelWindow {
                 }
             }
 
+            // Status Tray
             Rectangle {
                 id: statusTrayContainer
                 radius: 30
                 height: 32
-                color: "#2C2C2E"
-                border.width: 0
+
+                color: sideBarMouse.containsMouse 
+                       ? (shellContext ? shellContext.borderPill : "#252528") 
+                       : (shellContext ? shellContext.surfacePill : "#1C1C1E")
+
+                border.color: shellContext ? shellContext.borderPill : "#252528"
+                border.width: 1
+
+                Behavior on color { ColorAnimation { duration: 150 } }
                 width: statusTrayLayout.implicitWidth + 24
 
                 MouseArea {
+                    id: sideBarMouse
                     anchors.fill: parent
                     onClicked: rightSidebar.active = !rightSidebar.active
                     hoverEnabled: true
@@ -171,7 +189,11 @@ PanelWindow {
                         font.family: "Material Symbols Rounded"
                         text: localProcs.currentSsid !== "No WiFi" ? "\ue63e" : "\ue642"
                         font.pixelSize: 16
-                        color: localProcs.currentSsid !== "No WiFi" ? "#ECECEC" : "#636366"
+
+                        // Turns textMuted when disconnected
+                        color: localProcs.currentSsid !== "No WiFi" 
+                               ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5") 
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
@@ -180,7 +202,9 @@ PanelWindow {
                         font.family: "Material Symbols Rounded"
                         text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a7" : "\ue1a9"
                         font.pixelSize: 16
-                        color: localProcs.currentBtDevice !== "Disconnected" ? "#ECECEC" : "#636366"
+                        color: localProcs.currentBtDevice !== "Disconnected" 
+                               ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5") 
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
@@ -193,12 +217,12 @@ PanelWindow {
                             font.family: "Material Symbols Rounded"
                             text: localProcs.currentVolume === 0 ? "\ue04f" : (localProcs.currentVolume < 0.4 ? "\ue04d" : "\ue050")
                             font.pixelSize: 16
-                            color: "#ECECEC"
+                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
                             anchors.verticalCenter: parent.verticalCenter
                         }
                         Text {
                             text: Math.round(localProcs.currentVolume * 100) + "%"
-                            color: "#ECECEC"
+                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
                             font.pixelSize: 12
                             font.family: "Inter, Roboto, sans-serif"
                             font.weight: Font.Medium
@@ -208,13 +232,15 @@ PanelWindow {
                 }
             }
         }
+
         // ---------------- Media Capsule (Far Left) ----------------
         Rectangle {
             id: mediaBar
             radius: 30
             height: 32
-            color: "#2C2C2E"
-            border.width: 0
+            color: shellContext ? shellContext.surfacePill : "#1C1C1E"
+            border.color: shellContext ? shellContext.borderPill : "#252528"
+            border.width: 1
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
@@ -236,7 +262,12 @@ PanelWindow {
                 anchors.centerIn: parent
                 width: parent.width - 24
                 horizontalAlignment: Text.AlignHCenter
-                color: "#ECECEC"
+
+                // Media title highlighted with accentNormal if active, else textPrimary
+                color: localProcs.isPlaying 
+                       ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
+                       : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+
                 font.pixelSize: 14
                 elide: Text.ElideRight
                 font.family: "Inter, Roboto, sans-serif"

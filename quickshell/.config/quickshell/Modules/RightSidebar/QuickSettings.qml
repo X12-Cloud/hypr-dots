@@ -9,7 +9,7 @@ Rectangle {
     Layout.fillWidth: true
     Layout.fillHeight: true
     radius: 18
-    color: "#2C2C2E"
+    color: shellContext ? shellContext.surfacePill : "#1C1C1E"
     property var shellContext: null
 
     Procs { id: localProcs }
@@ -38,12 +38,12 @@ Rectangle {
                     width: volSlider.availableWidth
                     height: implicitHeight
                     radius: 12
-                    color: "#3A3A3C"
+                    color: shellContext ? shellContext.borderPill : "#252528"
 
                     Rectangle {
                         width: volSlider.visualPosition * parent.width
                         height: parent.height
-                        color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#D6BEFA"
+                        color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
                         radius: 10
                     }
                     RowLayout {
@@ -58,13 +58,13 @@ Rectangle {
                             font.family: "Material Symbols Rounded"
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                             Layout.leftMargin: 16
-                            color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : "#E6E1E5"
+                            color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
                             z: 2
                         }
                         Item { Layout.fillWidth: true }
                         Text {
                             text: Math.round(volSlider.value * 100) + "%"
-                            color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : "#CAC4D0"
+                            color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textMuted : "#CAC4D0")
                             font.pointSize: 11
                         }
                     }
@@ -76,9 +76,9 @@ Rectangle {
                     implicitWidth: 10
                     implicitHeight: 50
                     radius: 10
-                    color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#D6BEFA"
+                    color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
 
-                    border.color: volSlider.pressed ? "#FFFFFF" : "#E6E1E5"
+                    border.color: volSlider.pressed ? "#FFFFFF" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
                     border.width: 2
 
                     Behavior on scale { NumberAnimation { duration: 100 } }
@@ -94,7 +94,6 @@ Rectangle {
         }
 
         component WidePillButton : Rectangle {
-            // FIX: Added an explicit ID to the component root
             id: pillRoot
             property var shellContext: null
             property string icon: ""
@@ -107,7 +106,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             radius: pillRoot.isActive ? 20 : 30
-            color: mouseWide.containsMouse ? "#4A4A4C" : "#3A3A3C"
+            color: mouseWide.containsMouse ? "#2A2A2C" : (shellContext ? shellContext.borderPill : "#252528")
             Behavior on color { ColorAnimation { duration: 150 } }
 
             RowLayout {
@@ -121,9 +120,8 @@ Rectangle {
                     Layout.preferredWidth: 50
                     Layout.preferredHeight: 50
                     radius: pillRoot.isActive ? 20 : 30
-                    // FIX: Safe lookup via the pillRoot ID instead of nested parent chains
                     color: pillRoot.isActive 
-                           ? (pillRoot.shellContext ? pillRoot.shellContext.accentNormal : "#D6BEFA") 
+                           ? (pillRoot.shellContext ? pillRoot.shellContext.accentNormal : "#8AB4F8")
                            : "#2C2C2E"
                     Layout.alignment: Qt.AlignVCenter
 
@@ -131,7 +129,7 @@ Rectangle {
                         anchors.centerIn: parent
                         font.family: "Material Symbols Rounded"
                         text: pillRoot.icon
-                        color: pillRoot.isActive ? "#2C2C2E" : "#E6E1E5"
+                        color: pillRoot.isActive ? "#2C2C2E" : (pillRoot.shellContext ? pillRoot.shellContext.textPrimary : "#E6E1E5")
                         font.pointSize: 18
                     }
                 }
@@ -143,13 +141,13 @@ Rectangle {
 
                     Text {
                         text: pillRoot.title
-                        color: "#E6E1E5"
+                        color: pillRoot.shellContext ? pillRoot.shellContext.textPrimary : "#E6E1E5"
                         font.pointSize: 9.5
                         font.weight: Font.Bold
                     }
                     Text {
                         text: pillRoot.label
-                        color: "#CAC4D0"
+                        color: pillRoot.shellContext ? pillRoot.shellContext.textMuted : "#CAC4D0"
                         font.pointSize: 8
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -180,14 +178,14 @@ Rectangle {
             Layout.preferredHeight: 60
             radius: squareRoot.isActive ? 20 : 30
             color: squareRoot.isActive
-                   ? (squareRoot.shellContext ? squareRoot.shellContext.accentNormal : "#D6BEFA") 
-                   : (mouseSquare.containsMouse ? "#4A4A4C" : "#3A3A3C")
+                   ? (squareRoot.shellContext ? squareRoot.shellContext.accentNormal : "#8AB4F8") 
+                   : (mouseSquare.containsMouse ? "#2A2A2C" : (shellContext ? shellContext.borderPill : "#252528"))
             Behavior on color { ColorAnimation { duration: 150 } }
 
             Text {
                 anchors.centerIn: parent
                 text: squareRoot.icon
-                color: squareRoot.isActive ? "#2C2C2E" : "#E6E1E5"
+                color: squareRoot.isActive ? "#2C2C2E" : (squareRoot.shellContext ? squareRoot.shellContext.textPrimary : "#E6E1E5")
                 font.pointSize: 18
                 font.family: "Material Symbols Rounded"
             }

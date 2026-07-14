@@ -8,11 +8,13 @@ Rectangle {
     Layout.fillWidth: true
     implicitHeight: mainContentLayout.implicitHeight + 32
     radius: 24
-    color: "transparent" // "#161F30"
+    color: shellContext ? shellContext.surfacePill : "#161F30"
     clip: true
 
     property alias active: root.visible
-    property var shellContext: null 
+    property var shellContext: null
+
+    Procs { id: localProcs }
 
     function formatTime(microseconds) {
         let totalSeconds = Math.floor(microseconds / 1000000);
@@ -25,7 +27,7 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         radius: 24
-        color: "#0C1625"
+        color: "#0C1625" // root.shellContext.surfacePill (blue looks better imo)
         clip: true
 
         Image {
@@ -36,7 +38,7 @@ Rectangle {
                 return localProcs.trackArt.startsWith("/") ? "file://" + localProcs.trackArt : localProcs.trackArt;
             }
             fillMode: Image.PreserveAspectCrop
-            opacity: 0.22 
+            opacity: 0.22
             asynchronous: true
             cache: false
         }
@@ -119,7 +121,9 @@ Rectangle {
                 Rectangle {
                     width: 36; height: 36
                     radius: 12
-                    color: prevMouse.containsMouse ? "#1F314A" : "transparent"
+                    color: prevMouse.containsMouse 
+                           ? (root.shellContext ? root.shellContext.borderPill : "#1F314A") 
+                           : "transparent"
 
                     Behavior on color { ColorAnimation { duration: 180 } }
                     scale: prevMouse.pressed ? 0.92 : 1.0
@@ -127,9 +131,11 @@ Rectangle {
 
                     Text { 
                         anchors.centerIn: parent 
-                        text: "\ue045" 
-                        font.pointSize: 16 
-                        color: prevMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") : "#E2E8F0"
+                        text: "\ue045"
+                        font.pointSize: 16
+                        color: prevMouse.containsMouse 
+                               ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") 
+                               : (root.shellContext ? root.shellContext.textPrimary : "#E2E8F0")
                         font.family: "Material Symbols Rounded"
                         Behavior on color { ColorAnimation { duration: 140 } }
                     }
@@ -155,7 +161,7 @@ Rectangle {
                         text: localProcs.isPlaying ? "\ue034" : "\ue037"
                         font.pointSize: 20
                         font.family: "Material Symbols Rounded"
-                        color: "#050B14"
+                        color: root.shellContext ? root.shellContext.surfacePill : "#050B14"
                     }
                     MouseArea {
                         id: playMouse; anchors.fill: parent; hoverEnabled: true
@@ -168,7 +174,9 @@ Rectangle {
                 Rectangle {
                     width: 36; height: 36
                     radius: 12
-                    color: nextMouse.containsMouse ? "#1F314A" : "transparent"
+                    color: nextMouse.containsMouse 
+                           ? (root.shellContext ? root.shellContext.borderPill : "#1F314A") 
+                           : "transparent"
 
                     Behavior on color { ColorAnimation { duration: 180 } }
                     scale: nextMouse.pressed ? 0.92 : 1.0
@@ -176,9 +184,11 @@ Rectangle {
 
                     Text { 
                         anchors.centerIn: parent 
-                        text: "\ue044" 
-                        font.pointSize: 16 
-                        color: nextMouse.containsMouse ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") : "#E2E8F0"
+                        text: "\ue044"
+                        font.pointSize: 16
+                        color: nextMouse.containsMouse 
+                               ? (root.shellContext ? root.shellContext.accentNormal : "#8AB4F8") 
+                               : (root.shellContext ? root.shellContext.textPrimary : "#E2E8F0")
                         font.family: "Material Symbols Rounded"
                         Behavior on color { ColorAnimation { duration: 140 } }
                     }
@@ -202,7 +212,7 @@ Rectangle {
                 from: 0
                 to: 100
                 value: localProcs.percentage
-                enabled: false 
+                enabled: false
 
                 background: Rectangle {
                     x: trackProgress.leftPadding
@@ -210,7 +220,7 @@ Rectangle {
                     width: trackProgress.availableWidth
                     height: 6
                     radius: 3
-                    color: "#1F314A"
+                    color: root.shellContext ? root.shellContext.borderPill : "#1F314A"
 
                     Rectangle {
                         width: trackProgress.visualPosition * parent.width
@@ -226,7 +236,7 @@ Rectangle {
                     implicitWidth: 4
                     implicitHeight: 12
                     radius: 2
-                    color: "#E2E8F0"
+                    color: root.shellContext ? root.shellContext.textPrimary : "#E2E8F0"
                 }
             }
 

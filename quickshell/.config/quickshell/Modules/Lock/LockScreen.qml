@@ -29,7 +29,7 @@ PanelWindow {
     property color textPrimary:    typeof root !== 'undefined' ? root.textPrimary    : "#E2E8F0"
     property color textMuted:      typeof root !== 'undefined' ? root.textMuted      : "#64748B"
     property color errorAccent:    typeof root !== 'undefined' ? root.errorAccent    : "#F2B8B5"
-    property color errorSurface:   typeof root !== 'undefined' ? root.errorSurface   : "#2C161A"
+    property color errorSurface:   typeof root !== 'undefined' ? root.errorSurface    : "#2C161A"
 
     property real uiScale: 0.95
     property real uiOpacity: 0.0
@@ -142,8 +142,8 @@ PanelWindow {
 
         MouseArea {
             anchors.fill: parent
-            hoverEnabled: true
-            onPositionChanged: lockWindow.restoreBrightness()
+            //hoverEnabled: true
+            //onPositionChanged: lockWindow.restoreBrightness()
             onPressed: lockWindow.restoreBrightness()
             onClicked: {
                 lockWindow.restoreBrightness();
@@ -193,10 +193,10 @@ PanelWindow {
             }
 
             Rectangle {
-                Layout.preferredWidth: 2
+                Layout.preferredWidth: 3
                 Layout.preferredHeight: 110
-                color: borderPill
-                opacity: 0.5
+                color: accentNormal
+                opacity: 0.85
             }
 
             ColumnLayout {
@@ -234,7 +234,7 @@ PanelWindow {
             id: controlRow
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 100
+            anchors.bottomMargin: 75
             spacing: 12
             scale: lockWindow.uiScale
             opacity: lockWindow.uiOpacity
@@ -246,7 +246,7 @@ PanelWindow {
                 width: 120
                 height: 56
                 radius: 28
-                color: surfacePill
+                color: bgBase
                 border.width: 1
                 border.color: borderPill
 
@@ -281,12 +281,12 @@ PanelWindow {
                     id: inputPill
                     anchors.fill: parent
                     radius: 28
-                    color: surfacePill
+                    color: bgBase
                     border.width: 1
                     border.color: borderPill
 
                     states: [
-                        State { name: "normal"; PropertyChanges { target: inputPill; border.color: borderPill; color: surfacePill } },
+                        State { name: "normal"; PropertyChanges { target: inputPill; border.color: borderPill; color: bgBase } },
                         State { name: "error"; PropertyChanges { target: inputPill; border.color: errorAccent; color: errorSurface } }
                     ]
                     transitions: Transition { ColorAnimation { duration: 180 } }
@@ -365,7 +365,7 @@ PanelWindow {
                 width: 100
                 height: 56
                 radius: 28
-                color: surfacePill
+                color: bgBase
                 border.width: 1
                 border.color: borderPill
 

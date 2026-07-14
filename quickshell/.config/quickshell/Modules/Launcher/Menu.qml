@@ -24,9 +24,17 @@ PanelWindow {
     property var shellContext: null
     property int currentSelectionIndex: 0
 
-    // Custom apps array to easily inject your own shortcuts
-    property var customAppModel: [
-        { name: "Stupid", exec: "~/bin/stupid-script.sh", icon: "foot" },
+    // --- Dynamic Fallbacks linked to ShellSettings ---
+    property color bgBase:       shellContext ? shellContext.bgBase       : "#161618"
+    property color surfacePill:  shellContext ? shellContext.surfacePill  : "#1C1C1E"
+    property color borderPill:   shellContext ? shellContext.borderPill   : "#252528"
+    property color accentNormal: shellContext ? shellContext.accentNormal : "#8AB4F8"
+    property color textPrimary:  shellContext ? shellContext.textPrimary  : "#E6E1E5"
+    property color textMuted:    shellContext ? shellContext.textMuted    : "#CAC4D0"
+
+    // Custom apps array falling back to the exact default in your ShellSettings
+    property var customAppModel: shellContext ? shellContext.customApps : [
+        { name: "Stupid", exec: "~/bin/stupid-script.sh", icon: "foot" }
     ]
 
     // Unified app arrays
@@ -41,7 +49,7 @@ PanelWindow {
         onLoaded: {
             try {
                 let parsed = JSON.parse(appFileReader.text());
-                let combined = parsed.concat(launcherWindow.customAppModel);
+                let combined = parsed.concat(launcherWindow.customAppModel || []);
                 combined.sort((a, b) => a.name.localeCompare(b.name));
                 launcherWindow.fullAppModel = combined;
                 launcherWindow.filteredModel = combined;
@@ -58,8 +66,9 @@ PanelWindow {
     }
 
     function fallbackToCustom() {
-        launcherWindow.fullAppModel = launcherWindow.customAppModel;
-        launcherWindow.filteredModel = launcherWindow.customAppModel;
+        let fallbackList = launcherWindow.customAppModel || [];
+        launcherWindow.fullAppModel = fallbackList;
+        launcherWindow.filteredModel = fallbackList;
     }
 
     function filterApps(query) {
@@ -84,10 +93,14 @@ PanelWindow {
     function launchSelectedApp() {
         if (filteredModel.length > 0 && currentSelectionIndex < filteredModel.length) {
             let targetApp = filteredModel[currentSelectionIndex];
-            processRunner.command = ["systemd-run", "--user", "sh", "-c", targetApp.exec];
-            processRunner.running = true;
-            launcherWindow.closeLauncher();
+            runExternalCommand(targetApp.exec);
         }
+    }
+
+    function runExternalCommand(execCmd) {
+        processRunner.command = ["systemd-run", "--user", "sh", "-c", execCmd];
+        processRunner.running = true;
+        launcherWindow.closeLauncher();
     }
 
     Process {
@@ -123,72 +136,138 @@ PanelWindow {
                 anchors.fill: parent
                 spacing: 12
 
+                // --- Main Search Bar Panel ---
                 Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 54
-                    color: shellContext ? shellContext.bgBase : "#090F1C"
-                    radius: 27
-                    border.color: searchInput.activeFocus ? (shellContext ? shellContext.accentNormal : "#528BFF") : (shellContext ? shellContext.borderPill : "#1B2A4A")
-                    border.width: 1
+                    Layout.preferredHeight: 58
+                    Layout.preferredWidth: 420
+                    Layout.alignment: Qt.AlignHCenter
+                    color: launcherWindow.bgBase
+                    radius: 29
+                    border.color: searchInput.activeFocus ? launcherWindow.accentNormal : launcherWindow.borderPill
+                    border.width: 0
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 20
+                        anchors.leftMargin: 10
                         anchors.rightMargin: 20
-                        spacing: 14
+                        spacing: 10
 
-                        Text {
-                            text: "\ue8b6"
-                            font.family: "Material Symbols Rounded"
-                            font.pointSize: 16
-                            color: searchInput.activeFocus ? (shellContext ? shellContext.accentNormal : "#528BFF") : (shellContext ? shellContext.textMuted : "#4F6380")
+                        // Circular Search Icon Badge
+                        Rectangle {
+                            Layout.preferredWidth: 40
+                            Layout.preferredHeight: 40
+                            color: searchInput.activeFocus ? launcherWindow.accentNormal : launcherWindow.surfacePill
+                            radius: 20
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "\ue8b6"
+                                font.family: "Material Symbols Rounded"
+                                font.pointSize: 14
+                                color: searchInput.activeFocus ? launcherWindow.bgBase : launcherWindow.textMuted
+                            }
                         }
 
-                        TextField {
-                            id: searchInput
+                        // Inner nested pill for the text input block
+                        Rectangle {
                             Layout.fillWidth: true
-                            placeholderText: "Search apps..."
-                            placeholderTextColor: shellContext ? shellContext.textMuted : "#4F6380"
-                            color: shellContext ? shellContext.textPrimary : "#E2E8F0"
-                            font.pointSize: 12
-                            focus: true
+                            Layout.preferredHeight: 40
+                            color: launcherWindow.surfacePill
+                            radius: 20
+                            border.color: searchInput.activeFocus ? Qt.alpha(launcherWindow.accentNormal, 0.3) : "transparent"
+                            border.width: 0
 
-                            background: Rectangle { color: "transparent" }
-                            onTextChanged: launcherWindow.filterApps(text)
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 16
+                                anchors.rightMargin: 16
 
-                            Keys.onPressed: (event) => {
-                                if (event.key === Qt.Key_Escape) {
-                                    launcherWindow.closeLauncher();
-                                    event.accepted = true;
-                                } else if (event.key === Qt.Key_Down) {
-                                    if (launcherWindow.currentSelectionIndex < launcherWindow.filteredModel.length - 1) {
-                                        launcherWindow.currentSelectionIndex++;
-                                        appListView.positionViewAtIndex(launcherWindow.currentSelectionIndex, ListView.Contain);
+                                TextField {
+                                    id: searchInput
+                                    Layout.fillWidth: true
+                                    placeholderText: "Search apps..."
+                                    placeholderTextColor: launcherWindow.textMuted
+                                    color: launcherWindow.textPrimary
+                                    font.pointSize: 11
+                                    focus: true
+
+                                    background: Rectangle { color: "transparent" }
+                                    onTextChanged: launcherWindow.filterApps(text)
+
+                                    Keys.onPressed: (event) => {
+                                        if (event.key === Qt.Key_Escape) {
+                                            launcherWindow.closeLauncher();
+                                            event.accepted = true;
+                                        } else if (event.key === Qt.Key_Down) {
+                                            if (launcherWindow.currentSelectionIndex < launcherWindow.filteredModel.length - 1) {
+                                                launcherWindow.currentSelectionIndex++;
+                                                appListView.positionViewAtIndex(launcherWindow.currentSelectionIndex, ListView.Contain);
+                                            }
+                                            event.accepted = true;
+                                        } else if (event.key === Qt.Key_Up) {
+                                            if (launcherWindow.currentSelectionIndex > 0) {
+                                                launcherWindow.currentSelectionIndex--;
+                                                appListView.positionViewAtIndex(launcherWindow.currentSelectionIndex, ListView.Contain);
+                                            }
+                                            event.accepted = true;
+                                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                            launcherWindow.launchSelectedApp();
+                                            event.accepted = true;
+                                        }
                                     }
-                                    event.accepted = true;
-                                } else if (event.key === Qt.Key_Up) {
-                                    if (launcherWindow.currentSelectionIndex > 0) {
-                                        launcherWindow.currentSelectionIndex--;
-                                        appListView.positionViewAtIndex(launcherWindow.currentSelectionIndex, ListView.Contain);
-                                    }
-                                    event.accepted = true;
-                                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                    launcherWindow.launchSelectedApp();
-                                    event.accepted = true;
+
+                                    Component.onCompleted: forceActiveFocus()
                                 }
                             }
+                        }
 
-                            Component.onCompleted: forceActiveFocus()
+                        // File Manager (Nautilus)
+                        Text {
+                            text: "\uea85"
+                            font.family: "Material Symbols Rounded"
+                            font.pointSize: 15
+                            color: fileMouse.containsMouse ? launcherWindow.accentNormal : launcherWindow.textMuted
+                            Layout.alignment: Qt.AlignVCenter
+
+                            MouseArea {
+                                id: fileMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    launcherWindow.runExternalCommand("nautilus");
+                                }
+                            }
+                        }
+
+                        // Edit config settings in neovim
+                        Text {
+                            text: "\ue8b8"
+                            font.family: "Material Symbols Rounded"
+                            font.pointSize: 15
+                            color: settingsMouse.containsMouse ? launcherWindow.accentNormal : launcherWindow.textMuted
+                            Layout.alignment: Qt.AlignVCenter
+
+                            MouseArea {
+                                id: settingsMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    launcherWindow.runExternalCommand("foot -e nvim " + Quickshell.env("HOME") + "/.config/quickshell/quickshell.conf");
+                                }
+                            }
                         }
                     }
                 }
 
+                // --- Apps List View Container ---
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: shellContext ? shellContext.bgBase : "#090F1C"
+                    color: launcherWindow.bgBase
                     radius: 20
-                    border.color: shellContext ? shellContext.borderPill : "#1B2A4A"
+                    border.color: launcherWindow.borderPill
                     border.width: 1
                     visible: launcherWindow.filteredModel.length > 0
 
@@ -208,10 +287,10 @@ PanelWindow {
                             property bool isSelected: index === launcherWindow.currentSelectionIndex
 
                             color: isSelected 
-                                ? (shellContext ? shellContext.surfacePill : "#1A263D") 
-                                : (itemMouse.containsMouse ? (shellContext ? shellContext.bgBaseAlt : "#121B2A") : "transparent")
+                                ? launcherWindow.surfacePill 
+                                : (itemMouse.containsMouse ? launcherWindow.bgBaseAlt : "transparent")
 
-                            border.color: isSelected ? (shellContext ? shellContext.accentNormal : "#528BFF") : "transparent"
+                            border.color: isSelected ? launcherWindow.accentNormal : "transparent"
                             border.width: 1
 
                             RowLayout {
@@ -230,7 +309,7 @@ PanelWindow {
                                     Rectangle {
                                         anchors.fill: parent
                                         visible: parent.status === Image.Error || parent.status === Image.Null
-                                        color: parent.parent.parent.isSelected ? (shellContext ? shellContext.accentNormal : "#528BFF") : (shellContext ? shellContext.borderPill : "#1B2A4A")
+                                        color: parent.parent.parent.isSelected ? launcherWindow.accentNormal : launcherWindow.borderPill
                                         radius: 6
                                     }
                                 }
@@ -238,7 +317,7 @@ PanelWindow {
                                 Text {
                                     text: modelData.name
                                     Layout.fillWidth: true
-                                    color: parent.parent.isSelected ? (shellContext ? shellContext.accentNormal : "#528BFF") : (shellContext ? shellContext.textPrimary : "#E2E8F0")
+                                    color: parent.parent.isSelected ? launcherWindow.accentNormal : launcherWindow.textPrimary
                                     font.pointSize: 11
                                     font.weight: parent.parent.isSelected ? Font.DemiBold : Font.Normal
                                     verticalAlignment: Text.AlignVCenter

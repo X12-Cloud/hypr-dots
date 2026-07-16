@@ -1,4 +1,3 @@
-// ShellSettings.qml
 import QtQuick
 import QtCore
 
@@ -12,6 +11,8 @@ Item {
 
         // --- Persistent States ---
         property bool globalDnd: false
+        property int workspaceCount: 9
+        property bool lightMode: false
 
         // --- Colors ---
         property string bgBase: "#161618"
@@ -25,7 +26,7 @@ Item {
         property string errorSurface: "#3A1E1E"
 
         // --- Paths & Assets ---
-        property string backgroundImage: ""
+        property string backgroundImage: "/home/x12/Pictures/wallpapers/2054-3840x2160-desktop-4k-firewatch-background.jpg"
         property string placeholderImage: "../images/blackhole.jpg"
 
         // Custom apps
@@ -35,18 +36,20 @@ Item {
     }
 
     property alias globalDnd: store.globalDnd
-    property var customApps: store.customApps
+    property alias workspaceCount: store.workspaceCount
+    property alias customApps: store.customApps
     property alias backgroundImage: store.backgroundImage
     property alias placeholderImage: store.placeholderImage
+    property alias lightMode: store.lightMode // <-- Expose via Alias Entry
 
-    // Color exports
-    readonly property color bgBase: store.bgBase
-    readonly property color surfacePill: store.surfacePill
-    readonly property color borderPill: store.borderPill
-    readonly property color accentNormal: store.accentNormal
-    readonly property color textPrimary: store.textPrimary
-    readonly property color textMuted: store.textMuted
+    // Color aliases
+    property alias bgBase: store.bgBase
+    property alias surfacePill: store.surfacePill
+    property alias borderPill: store.borderPill
+    property alias accentNormal: store.accentNormal
+    property alias textPrimary: store.textPrimary
+    property alias textMuted: store.textMuted
 
-    readonly property color errorAccent: store.errorAccent
-    readonly property color errorSurface: store.errorSurface
+    property alias errorAccent: store.errorAccent
+    property alias errorSurface: store.errorSurface
 }

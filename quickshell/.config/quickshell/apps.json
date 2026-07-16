@@ -93,6 +93,10 @@
 ,
   { "name": "Rofi", "exec": "rofi -show", "icon": "rofi" }
 ,
+  { "name": "scrcpy (console)", "exec": "/bin/sh -c \"\\$SHELL -i -c 'scrcpy --pause-on-exit=if-error'\"", "icon": "scrcpy" }
+,
+  { "name": "scrcpy", "exec": "/bin/sh -c \"\\$SHELL -i -c scrcpy\"", "icon": "scrcpy" }
+,
   { "name": "Spotify", "exec": "spotify --uri=%u", "icon": "spotify-client" }
 ,
   { "name": "Steam", "exec": "/usr/bin/steam", "icon": "steam" }

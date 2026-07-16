@@ -15,9 +15,9 @@ PanelWindow {
 
     implicitHeight: 480
 
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-    WlrLayershell.exclusionMode: WlrExclusionMode.None
+    WlrLayershell.layer: WlrLayershell.Overlay
+    WlrLayershell.keyboardFocus: WlrLayershell.Exclusive
+    WlrLayershell.exclusionMode: WlrLayershell.None
 
     color: "transparent"
 
@@ -31,6 +31,8 @@ PanelWindow {
     property color accentNormal: shellContext ? shellContext.accentNormal : "#8AB4F8"
     property color textPrimary:  shellContext ? shellContext.textPrimary  : "#E6E1E5"
     property color textMuted:    shellContext ? shellContext.textMuted    : "#CAC4D0"
+
+    property var settingsApp: shellContext ? shellContext.settingsApp : null
 
     // Custom apps array falling back to the exact default in your ShellSettings
     property var customAppModel: shellContext ? shellContext.customApps : [
@@ -254,7 +256,13 @@ PanelWindow {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    launcherWindow.runExternalCommand("foot -e nvim " + Quickshell.env("HOME") + "/.config/quickshell/quickshell.conf");
+                                    //launcherWindow.runExternalCommand("foot -e nvim " + Quickshell.env("HOME") + "/.config/quickshell/quickshell.conf");
+                                    launcherWindow.closeLauncher();
+                                    if (launcherWindow.settingsApp) {
+                                        launcherWindow.settingsApp.visible = !launcherWindow.settingsApp.visible;
+                                    } else {
+                                        console.warn("SettingsApp target window not bound to Launcher yet!");
+                                    }
                                 }
                             }
                         }

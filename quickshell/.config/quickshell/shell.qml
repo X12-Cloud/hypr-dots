@@ -7,6 +7,7 @@ import "./Modules/Bar"
 import "./Modules/RightSidebar" as RS
 import "./Modules/MediaPlayer" as MP
 import "./Modules/Lock/" as LS
+import "./Modules/Settings/" as ST
 
 ShellRoot {
     id: root
@@ -16,6 +17,8 @@ ShellRoot {
     }
 
     property var customAppModel: persistentSettings.customApps
+
+    property bool lightMode: persistentSettings.lightMode
 
     // Colours
     readonly property color bgBase: persistentSettings.bgBase
@@ -28,16 +31,24 @@ ShellRoot {
     readonly property color errorAccent: persistentSettings.errorAccent
     readonly property color errorSurface: persistentSettings.errorSurface
 
-    // Dnd
+    // Dnd and workspaces
     property alias globalDnd: persistentSettings.globalDnd
+    property int workspaceCount: persistentSettings.workspaceCount
 
     // Images
     property alias backgroundImage: persistentSettings.backgroundImage
     property alias placeholderImage: persistentSettings.placeholderImage
 
+    property alias settingsApp: settingsApp
+
     Loader { active: true; sourceComponent: Bar { shellContext: root } }
     RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig; shellContext: root; }
+
+    ST.SettingsApp {
+        id: settingsApp
+        visible: false
+    }
 
     property bool isLocked: false
     Loader {

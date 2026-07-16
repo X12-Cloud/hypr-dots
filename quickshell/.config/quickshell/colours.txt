@@ -1,0 +1,11 @@
+// backup of colours i use in case anything goes wrong
+
+property string bgBase: "#161618"
+property string surfacePill: "#1C1C1E"
+property string borderPill: "#252528"
+property string accentNormal: "#8AB4F8"
+property string textPrimary: "#E6E1E5"
+property string textMuted: "#CAC4D0"
+
+property string errorAccent: "#FFB4AB"
+property string errorSurface: "#3A1E1E"

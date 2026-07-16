@@ -24,8 +24,8 @@ PanelWindow {
         repeat: true
         onTriggered: {
             var now = new Date();
-            currentTimeDate = Qt.formatDate(now, "MMM d, yy");
-            currentTimeClock = Qt.formatTime(now, "h:mm:ss AP");
+            currentTimeDate = Qt.formatDate(now, "ddd, d/MM");
+            currentTimeClock = Qt.formatTime(now, "h:mm AP");
         }
     }
     Component.onCompleted: timeUpdater.triggered()
@@ -47,230 +47,329 @@ PanelWindow {
         anchors.leftMargin: 10
         anchors.bottomMargin: 0
 
+        // ------------- Center Layout -------------
         Row {
-            id: workspacesRow
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                verticalCenter: parent.verticalCenter
-                leftMargin: 12
-            }
-            spacing: 8
+            id: centerLayoutGroup
+            anchors.centerIn: parent
+            spacing: 5
 
-            // ---------------- Workspace Pills ----------------
-            Repeater {
-                model: Hyprland.workspaces
+            // Media Capsule
+            Rectangle {
+                id: mediaBar
+                radius: 14
+                height: 32
+                color: shellContext ? shellContext.surfacePill : "#1C1C1E"
+                width: 200
+                visible: true
 
-                Rectangle {
-                    id: pill
-                    radius: 999
-                    height: 30
-                    width: modelData.active ? 32 : 28 
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mediaPlayerBig.active = !mediaPlayerBig.active
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                }
 
-                    color: modelData.active 
-                           ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
-                           : (panel.shellContext ? panel.shellContext.surfacePill : "#1C1C1E")
+                Row {
+                    id: mediaLayout
+                    anchors.centerIn: parent
+                    width: parent.width - 20
+                    spacing: 12
 
-                    scale: modelData.active ? 1.12 : 1.0
-                    border.width: 0
+                    Rectangle {
+                        id: iconBg
+                        width: 24
+                        height: 24
+                        radius: 999
+                        anchors.verticalCenter: parent.verticalCenter
 
-                    Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
-                    Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutCubic } }
-                    Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutBack } }
+                        color: panel.shellContext 
+                               ? (panel.shellContext.bgBase.hslLightness < 0.5
+                                   ? Qt.lighter(panel.shellContext.bgBase, 1.2)
+                                   : Qt.darker(panel.shellContext.bgBase, 1.1))
+                               : "#252528"
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: Hyprland.dispatch("workspace " + modelData.id)
+                        Behavior on color { ColorAnimation { duration: 200 } }
+
+                        Text {
+                            id: mediaIcon
+                            anchors.centerIn: parent
+                            font.family: "Material Symbols Rounded"
+                            text: "\ue405"
+                            font.pixelSize: 14
+
+                            color: localProcs.isPlaying 
+                                   ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
+                                   : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                        }
                     }
 
                     Text {
-                        anchors.centerIn: parent
-                        text: modelData.id
+                        id: mediaContent
+                        text: localProcs.isPlaying ? localProcs.trackTitle : "Nothing Playing"
+                        anchors.verticalCenter: parent.verticalCenter
 
-                        color: modelData.active 
-                               ? (panel.shellContext ? panel.shellContext.bgBase : "#161618") 
-                               : (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5")
+                        width: parent.width - iconBg.width - parent.spacing
 
-                        font.pixelSize: 14
-                        font.family: "Roboto, sans-serif"
-                        opacity: modelData.active ? 1.0 : 0.75
-                        Behavior on opacity { NumberAnimation { duration: 180 } }
+                        color: localProcs.isPlaying 
+                               ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+
+                        font.pixelSize: 13
+                        elide: Text.ElideRight
+                        font.family: "Inter, Roboto, sans-serif"
+                        font.weight: Font.Medium
                     }
                 }
             }
 
-            // Show this if no workspaces
-            Text {
-                visible: Hyprland.workspaces.length === 0
-                text: "No workspaces"
-                color: panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0"
-                font.pixelSize: 14
+            // Workspace Container
+            Rectangle {
+                id: workspaceCapsule
+                height: 32
+                width: workspacesRow.width + 20
+                radius: 14
+
+                color: panel.shellContext 
+                       ? (panel.shellContext.bgBase.hslLightness < 0.5
+                           ? Qt.lighter(panel.shellContext.bgBase, 1.25)
+                           : Qt.darker(panel.shellContext.bgBase, 1.15))
+                       : "#1C1C1E"
+
+                border.color: panel.shellContext ? panel.shellContext.borderPill : "#252528"
+                border.width: 0
+
+                Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                Behavior on color { ColorAnimation { duration: 200 } }
+
+                Row {
+                    id: workspacesRow
+                    anchors.centerIn: parent
+                    spacing: 8
+
+                    Repeater {
+                        model: panel.shellContext && panel.shellContext.workspaceCount !== undefined 
+                               ? panel.shellContext.workspaceCount 
+                               : 9
+
+                        Rectangle {
+                            id: pill
+
+                            property int wsId: index + 1
+                            property var ws: Hyprland.workspaces.values.find(function(w) { return w.id === wsId })
+
+                            property bool isOccupied: ws !== undefined
+                            property bool isActive: ws ? ws.active : false
+
+                            radius: 15
+                            height: 26
+                            width: 26
+
+                            color: isActive 
+                                   ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                                   : (panel.shellContext ? panel.shellContext.surfacePill : "#1C1C1E")
+
+                            opacity: isActive ? 1.0 : (isOccupied ? 0.8 : 0.35)
+                            scale: isActive ? 1.12 : 1.0
+                            border.width: 0
+
+                            Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                            Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutBack } }
+                            Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: Hyprland.dispatch("workspace " + wsId)
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: isActive ? wsId : "•"
+
+                                color: isActive 
+                                       ? (panel.shellContext ? panel.shellContext.bgBase : "#161618") 
+                                       : (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5")
+
+                                font.pixelSize: isActive ? 13 : 18
+                                font.family: "Inter, Roboto, sans-serif"
+
+                                opacity: isActive || isOccupied ? 1.0 : 0.5
+                                Behavior on opacity { NumberAnimation { duration: 180 } }
+                            }
+                        }
+                    }
+
+                    Text {
+                        visible: Hyprland.workspaces.length === 0
+                        text: "No workspaces"
+                        color: panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0"
+                        font.pixelSize: 14
+                    }
+                }
+            }
+
+            // Unified Clock, Date & Utility Capsule
+            Rectangle {
+                id: timeContainer
+                radius: 14
+                height: 32
+                color: shellContext ? shellContext.surfacePill : "#1C1C1E"
+                width: timeLayout.implicitWidth + 24
+
+                Row {
+                    id: timeLayout
+                    anchors.centerIn: parent
+                    spacing: 12
+
+                    Row {
+                        spacing: 8
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text {
+                            text: panel.currentTimeClock
+                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
+                            font.pixelSize: 14
+                            font.family: "Inter, Roboto, sans-serif"
+                            font.weight: Font.Medium
+                        }
+                        Text {
+                            text: "•"
+                            color: panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0"
+                            font.pixelSize: 14
+                            font.family: "Inter, Roboto, sans-serif"
+                        }
+                        Text {
+                            text: panel.currentTimeDate
+                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
+                            font.pixelSize: 14
+                            font.family: "Inter, Roboto, sans-serif"
+                            font.weight: Font.Medium
+                        }
+                    }
+
+                    Item {
+                        width: 12
+                        height: 1
+                    }
+
+                    Text {
+                        id: screenshotBtn
+                        font.family: "Material Symbols Rounded"
+                        text: "\ue412"
+                        font.pixelSize: 16
+                        color: screenshotMouse.containsMouse 
+                               ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Behavior on color { ColorAnimation { duration: 150 } }
+
+                        MouseArea {
+                            id: screenshotMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                // exec: hyprshot -m output
+                            }
+                        }
+                    }
+
+                    Text {
+                        id: brightnessBtn
+                        font.family: "Material Symbols Rounded"
+                        text: "\ue518"
+                        font.pixelSize: 16
+                        color: brightnessMouse.containsMouse 
+                               ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Behavior on color { ColorAnimation { duration: 150 } }
+
+                        MouseArea {
+                            id: brightnessMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                // exec: brightnessctl set 10%+
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        // ---------------- System Status Clusters (Far Right) ----------------
-        Row {
-            id: systemControlsGroup
-            spacing: 8
+        // ---------------- Status Tray ----------------
+        Rectangle {
+            id: statusTrayContainer
+            radius: 15
+            height: 32
             anchors {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
                 rightMargin: 12
             }
 
-            // Clock/Date Capsule
-            Rectangle {
-                id: timeContainer
-                radius: 30
-                height: 32
-                color: shellContext ? shellContext.surfacePill : "#1C1C1E"
-                border.color: shellContext ? shellContext.borderPill : "#252528"
-                border.width: 1
-                width: timeLayout.implicitWidth + 24
+            color: sideBarMouse.containsMouse ? (shellContext ? shellContext.surfacePill : "#1C1C1E") : "transparent"
 
-                Row {
-                    id: timeLayout
-                    anchors.centerIn: parent
-                    spacing: 8
-
-                    Text {
-                        text: panel.currentTimeDate
-                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
-                        font.pixelSize: 14
-                        font.family: "Inter, Roboto, sans-serif"
-                        font.weight: Font.Medium
-                    }
-                    Text {
-                        text: "|"
-                        color: panel.shellContext ? panel.shellContext.borderPill : "#252528"
-                        font.pixelSize: 14
-                        font.family: "Inter, Roboto, sans-serif"
-                    }
-                    Text {
-                        text: panel.currentTimeClock
-                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
-                        font.pixelSize: 14
-                        font.family: "Inter, Roboto, sans-serif"
-                        font.weight: Font.Medium
-                    }
-                }
-            }
-
-            // Status Tray
-            Rectangle {
-                id: statusTrayContainer
-                radius: 30
-                height: 32
-
-                color: sideBarMouse.containsMouse 
-                       ? (shellContext ? shellContext.borderPill : "#252528") 
-                       : (shellContext ? shellContext.surfacePill : "#1C1C1E")
-
-                border.color: shellContext ? shellContext.borderPill : "#252528"
-                border.width: 1
-
-                Behavior on color { ColorAnimation { duration: 150 } }
-                width: statusTrayLayout.implicitWidth + 24
-
-                MouseArea {
-                    id: sideBarMouse
-                    anchors.fill: parent
-                    onClicked: rightSidebar.active = !rightSidebar.active
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                }
-
-                Row {
-                    id: statusTrayLayout
-                    anchors.centerIn: parent
-                    spacing: 12
-
-                    // WiFi Icon
-                    Text {
-                        font.family: "Material Symbols Rounded"
-                        text: localProcs.currentSsid !== "No WiFi" ? "\ue63e" : "\ue642"
-                        font.pixelSize: 16
-
-                        // Turns textMuted when disconnected
-                        color: localProcs.currentSsid !== "No WiFi" 
-                               ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5") 
-                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    // Bluetooth Icon
-                    Text {
-                        font.family: "Material Symbols Rounded"
-                        text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a7" : "\ue1a9"
-                        font.pixelSize: 16
-                        color: localProcs.currentBtDevice !== "Disconnected" 
-                               ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5") 
-                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    // Volume Block (Icon + Percentage)
-                    Row {
-                        spacing: 4
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Text {
-                            font.family: "Material Symbols Rounded"
-                            text: localProcs.currentVolume === 0 ? "\ue04f" : (localProcs.currentVolume < 0.4 ? "\ue04d" : "\ue050")
-                            font.pixelSize: 16
-                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-                        Text {
-                            text: Math.round(localProcs.currentVolume * 100) + "%"
-                            color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
-                            font.pixelSize: 12
-                            font.family: "Inter, Roboto, sans-serif"
-                            font.weight: Font.Medium
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-                    }
-                }
-            }
-        }
-
-        // ---------------- Media Capsule (Far Left) ----------------
-        Rectangle {
-            id: mediaBar
-            radius: 30
-            height: 32
-            color: shellContext ? shellContext.surfacePill : "#1C1C1E"
-            border.color: shellContext ? shellContext.borderPill : "#252528"
-            border.width: 1
-            anchors {
-                left: parent.left
-                verticalCenter: parent.verticalCenter
-                leftMargin: 12
-            }
-            width: 200
-            visible: true
+            Behavior on color { ColorAnimation { duration: 150 } }
+            width: statusTrayLayout.implicitWidth + 24
 
             MouseArea {
+                id: sideBarMouse
                 anchors.fill: parent
-                onClicked: mediaPlayerBig.active = !mediaPlayerBig.active
+                onClicked: rightSidebar.active = !rightSidebar.active
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
             }
 
-            Text {
-                id: mediaContent
-                text: localProcs.isPlaying ? localProcs.trackTitle : "Nothing Playing"
+            Row {
+                id: statusTrayLayout
                 anchors.centerIn: parent
-                width: parent.width - 24
-                horizontalAlignment: Text.AlignHCenter
+                spacing: 12
 
-                // Media title highlighted with accentNormal if active, else textPrimary
-                color: localProcs.isPlaying 
-                       ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
-                       : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                Text {
+                    font.family: "Material Symbols Rounded"
+                    text: localProcs.currentSsid !== "No WiFi" ? "\ue63e" : "\ue642"
+                    font.pixelSize: 16
 
-                font.pixelSize: 14
-                elide: Text.ElideRight
-                font.family: "Inter, Roboto, sans-serif"
+                    color: localProcs.currentSsid !== "No WiFi" 
+                           ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5")
+                           : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    font.family: "Material Symbols Rounded"
+                    text: localProcs.currentBtDevice !== "Disconnected" ? "\ue1a7" : "\ue1a9"
+                    font.pixelSize: 16
+                    color: localProcs.currentBtDevice !== "Disconnected" 
+                           ? (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5") 
+                           : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Row {
+                    spacing: 4
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        font.family: "Material Symbols Rounded"
+                        text: localProcs.currentVolume === 0 ? "\ue04f" : (localProcs.currentVolume < 0.4 ? "\ue04d" : "\ue050")
+                        font.pixelSize: 16
+                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Text {
+                        text: Math.round(localProcs.currentVolume * 100) + "%"
+                        color: panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5"
+                        font.pixelSize: 12
+                        font.family: "Inter, Roboto, sans-serif"
+                        font.weight: Font.Medium
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
             }
         }
     }

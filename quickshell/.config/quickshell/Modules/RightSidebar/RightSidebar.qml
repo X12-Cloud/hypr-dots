@@ -23,6 +23,7 @@ PanelWindow {
     mask: Region { item: sidebarContent }
 
     property var shellContext: null
+    property var settingsApp: shellContext ? shellContext.settingsApp : null
 
     property bool active: false
     Procs { id: localProcs }
@@ -101,6 +102,37 @@ PanelWindow {
                         anchors.fill: parent
                         anchors.margins: 3
                         spacing: 2
+
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            radius: 20
+                            color: settingsMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            Text {
+                                anchors.centerIn: parent
+                                font.family: "Material Symbols Rounded"
+                                text: "\ue8b8"
+                                color: shellContext ? shellContext.textPrimary : "#E6E1E5"
+                                font.pointSize: 13
+                            }
+
+                            MouseArea {
+                                id: settingsMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    sidebar.active = !sidebar.active
+                                    if (sidebar.settingsApp) {
+                                        sidebar.settingsApp.visible = !sidebar.settingsApp.visible;
+                                    } else {
+                                        console.warn("SettingsApp target window not bound to RightsideBar yet!");
+                                    }
+                                }
+                            }
+                        }
 
                         Rectangle {
                             Layout.fillWidth: true

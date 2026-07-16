@@ -242,7 +242,7 @@ PanelWindow {
                             }
                         }
 
-                        // Edit config settings in neovim
+                        // Edit config settings
                         Text {
                             text: "\ue8b8"
                             font.family: "Material Symbols Rounded"

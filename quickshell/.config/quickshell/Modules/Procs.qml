@@ -38,6 +38,10 @@ Item {
     property string diskIO: "Idle"
     property string diskMountPoint: "[ / ]"
 
+    // Brightness Metrics
+    property int currentBrightness: 0
+    property int maxBrightness: 1
+
     property alias volumeSetter: volumeSetter
     property alias wifiToggle: wifiToggle
     property alias wifiManager: wifiManager
@@ -45,6 +49,9 @@ Item {
     property alias mediaNext: mediaNext
     property alias mediaToggle: mediaToggle
     property alias mediaPrev: mediaPrev
+
+    // Action Aliases for Bar.qml
+    property alias screenshotSelect: screenshotSelect
 
     function run(proc) {
         proc.running = false;
@@ -71,7 +78,22 @@ Item {
         run(awakeToggle);
     }
 
-    // Combined Data Fetching via Multi-Statement Shell Scripts
+    // --- Brightness Logic ---
+    function brightnessUp() {
+        brightnessSetter.command = ["brightnessctl", "set", "10%+"];
+        run(brightnessSetter);
+    }
+
+    function brightnessDown() {
+        brightnessSetter.command = ["brightnessctl", "set", "10%-"];
+        run(brightnessSetter);
+    }
+
+    Process {
+        id: brightnessSetter
+        onExited: (status) => { if (status === Process.NormalExit) run(getBrightness); }
+    }
+
     Process {
         id: cpuPercentage
         command: ["sh", "-c", "usage=$(top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/' | awk '{print 100 - $1}'); freq=$(lscpu | grep 'CPU MHz' | awk '{print $3}'); load=$(cat /proc/loadavg | awk '{print $1}'); echo \"$usage||$freq||$load\""]
@@ -241,6 +263,21 @@ Item {
         }
     }
 
+    // Brightness Reading Process
+    Process {
+        id: getBrightness
+        command: ["sh", "-c", "cur=$(brightnessctl get); max=$(brightnessctl max); echo \"$cur||$max\""]
+        stdout: SplitParser {
+            onRead: (data) => {
+                let parts = data.trim().split("||");
+                if (parts.length === 2) {
+                    procs.currentBrightness = parseInt(parts[0]) || 0;
+                    procs.maxBrightness = parseInt(parts[1]) || 1;
+                }
+            }
+        }
+    }
+
     Process {
         id: wifiToggle
         command: ["/bin/sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]
@@ -252,6 +289,12 @@ Item {
     Process {
         id: btManager
         command: ["blueman-manager"]
+    }
+
+    // --- SCREENSHOT LOGIC (from hyprland keybinds) ---
+    Process {
+        id: screenshotSelect
+        command: ["/bin/sh", "-c", "grim -g \"$(slurp)\" - | satty --filename - --output-filename - | tee ~/Pictures/Screenshots/$(date +'%Y%m%d_%Hh%Mms%s_satty.png') | wl-copy"]
     }
 
     Process {
@@ -314,6 +357,7 @@ Item {
             getBtDevice.running = true
             getMetadata.running = true
             getVol.running = true
+            getBrightness.running = true // Update brightness metrics
             checkAwakeStatus.running = true
             getSoundDevice.running = true
 

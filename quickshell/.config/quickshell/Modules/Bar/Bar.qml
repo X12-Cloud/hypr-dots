@@ -47,6 +47,47 @@ PanelWindow {
         anchors.leftMargin: 10
         anchors.bottomMargin: 0
 
+        // ---------------- Arch Logo (Far Left) ----------------
+        Rectangle {
+            id: archLogoContainer
+            radius: 15
+            height: 32
+            width: 36
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: 12
+            }
+
+            color: archMouse.containsMouse ? (shellContext ? shellContext.surfacePill : "#1C1C1E") : "transparent"
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            MouseArea {
+                id: archMouse
+                anchors.fill: parent
+                onClicked: {
+                    shellContext.createLauncher()
+                }
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            Text {
+                id: archIcon
+                anchors.centerIn: parent
+                font.family: "JetBrainsMono Nerd Font, Inter, sans-serif"
+                text: "\uf303" 
+                font.pixelSize: 16
+
+                // Uses the accent color if hovering
+                color: archMouse.containsMouse
+                        ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                        : (panel.shellContext ? panel.shellContext.textPrimary : "#E6E1E5")
+
+                Behavior on color { ColorAnimation { duration: 150 } }
+            }
+        }
+
         // ------------- Center Layout -------------
         Row {
             id: centerLayoutGroup
@@ -98,8 +139,8 @@ PanelWindow {
                             font.pixelSize: 14
 
                             color: localProcs.isPlaying 
-                                   ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
-                                   : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                                    ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8") 
+                                    : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
                         }
                     }
 
@@ -251,6 +292,7 @@ PanelWindow {
                         height: 1
                     }
 
+                    // --- SCREENSHOT BUTTON ---
                     Text {
                         id: screenshotBtn
                         font.family: "Material Symbols Rounded"
@@ -269,15 +311,17 @@ PanelWindow {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                // exec: hyprshot -m output
+                                // Triggers the grim | satty | wl-copy process defined in Procs.qml
+                                localProcs.run(localProcs.screenshotSelect);
                             }
                         }
                     }
 
+                    // --- BRIGHTNESS BUTTON ---
                     Text {
                         id: brightnessBtn
                         font.family: "Material Symbols Rounded"
-                        text: "\ue518"
+                        text: "\ue518" // You might want to update this tooltip/symbol to show % later
                         font.pixelSize: 16
                         color: brightnessMouse.containsMouse 
                                ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
@@ -291,16 +335,21 @@ PanelWindow {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
+                            
+                            // Left click increases brightness
                             onClicked: {
-                                // exec: brightnessctl set 10%+
+                                localProcs.brightnessUp();
                             }
+                            
+                            // (Optional) If you have wheel support, you could add scrolling later
+                            // onWheel: (wheel) => { ... }
                         }
                     }
                 }
             }
         }
 
-        // ---------------- Status Tray ----------------
+        // ---------------- Status Tray (Far Right) ----------------
         Rectangle {
             id: statusTrayContainer
             radius: 15

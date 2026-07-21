@@ -22,72 +22,104 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 6
-            Slider {
-                id: volSlider
-                Layout.fillWidth: true
-                Layout.preferredHeight: 36
-                from: 0
-                to: 1
-                value: localProcs.currentVolume
+            RowLayout {
+                Slider {
+                    id: volSlider
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    from: 0
+                    to: 1
+                    value: localProcs.currentVolume
 
-                background: Rectangle {
-                    x: volSlider.leftPadding
-                    y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 200
-                    implicitHeight: parent.height
-                    width: volSlider.availableWidth
-                    height: implicitHeight
-                    radius: 12
-                    color: shellContext ? shellContext.borderPill : "#252528"
+                    background: Rectangle {
+                        x: volSlider.leftPadding
+                        y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
+                        implicitWidth: 200
+                        implicitHeight: parent.height
+                        width: volSlider.availableWidth
+                        height: implicitHeight
+                        radius: 18
+                        color: shellContext ? shellContext.borderPill : "#252528"
 
-                    Rectangle {
-                        width: volSlider.visualPosition * parent.width
-                        height: parent.height
-                        color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
-                        radius: 10
-                    }
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
-                        spacing: 0
-                        Text {
-                            id: volIcon
-                            text: volSlider.value > 0 ? "\ue050" : "\ue04f"
-                            font.pointSize: 16
-                            font.family: "Material Symbols Rounded"
-                            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                            Layout.leftMargin: 16
-                            color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
-                            z: 2
+                        Rectangle {
+                            width: volSlider.visualPosition * parent.width
+                            height: parent.height
+                            color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
+                            radius: 18
                         }
-                        Item { Layout.fillWidth: true }
-                        Text {
-                            text: Math.round(volSlider.value * 100) + "%"
-                            color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textMuted : "#CAC4D0")
-                            font.pointSize: 11
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 16
+                            anchors.rightMargin: 16
+                            spacing: 0
+                            /* Text {
+                                id: volIcon
+                                text: volSlider.value > 0 ? "\ue050" : "\ue04f"
+                                font.pointSize: 16
+                                font.family: "Material Symbols Rounded"
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                                Layout.leftMargin: 16
+                                color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
+                                z: 2
+                            } */
+                            Item { Layout.fillWidth: true }
+                            Text {
+                                text: Math.round(volSlider.value * 100) + "%"
+                                color: volSlider.visualPosition > 0.85 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textMuted : "#CAC4D0")
+                                font.pointSize: 11
+                            }
+                        }
+                    }
+
+                    handle: Rectangle {
+                        x: (volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)) - 10
+                        y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
+                        implicitWidth: 36
+                        implicitHeight: 36
+                        radius: 18
+                        color: "transparent" // settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
+
+                        border.color: volSlider.pressed ? "#FFFFFF" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
+                        border.width: 0
+
+                        Behavior on scale { NumberAnimation { duration: 100 } }
+                        scale: volSlider.hovered ? 1.1 : 1.0
+                    }
+
+                    onValueChanged: {
+                        if (pressed) {
+                            localProcs.volumeSetter.updateVol(value.toFixed(2))
                         }
                     }
                 }
-
-                handle: Rectangle {
-                    x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width)
-                    y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 10
-                    implicitHeight: 50
-                    radius: 10
-                    color: settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
-
-                    border.color: volSlider.pressed ? "#FFFFFF" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
-                    border.width: 2
-
-                    Behavior on scale { NumberAnimation { duration: 100 } }
-                    scale: volSlider.hovered ? 1.2 : 1.0
-                }
-
-                onValueChanged: {
-                    if (pressed) {
-                        localProcs.volumeSetter.updateVol(value.toFixed(2))
+                Rectangle {
+                    Layout.preferredWidth: 36
+                    Layout.preferredHeight: 36
+                    radius: 18
+                    color: volBtn.containsMouse ? "#2A2A2C" : (shellContext ? shellContext.borderPill : "#252528")
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                    Text {
+                        id: volIcon1
+                        text: volSlider.value > 0 ? "\ue050" : "\ue04f"
+                        font.pointSize: 16
+                        font.family: "Material Symbols Rounded"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5"
+                    }
+                    MouseArea {
+                        id: volBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            let savedVal = volSlider.value;
+                            if (volSlider.value != 0) {
+                                localProcs.volumeSetter.updateVol(0)
+                                volSlider.value = 0
+                            } else {
+                                let restoreVal = savedVal > 0 ? savedVal : 0.5
+                                localProcs.volumeSetter.updateVol(restoreVal)
+                                volSlider.value = restoreVal
+                            }
+                        }
                     }
                 }
             }

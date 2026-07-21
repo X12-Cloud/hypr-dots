@@ -8,6 +8,7 @@ import "./Modules/RightSidebar" as RS
 import "./Modules/MediaPlayer" as MP
 import "./Modules/Lock/" as LS
 import "./Modules/Settings/" as ST
+import "./Modules/widgets/clock"
 
 ShellRoot {
     id: root
@@ -44,6 +45,8 @@ ShellRoot {
     Loader { active: true; sourceComponent: Bar { shellContext: root } }
     RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig; shellContext: root; }
+    //DesktopClock {}
+    MaterialClockDigital {}
 
     ST.SettingsApp {
         id: settingsApp

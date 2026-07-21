@@ -213,6 +213,12 @@ PanelWindow {
                 Layout.fillHeight: true
                 shellContext: sidebar.shellContext
             }
+            /* UtilsList {
+                id: utilsCard
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                shellContext: sidebar.shellContext
+            } */
         }
     }
 }

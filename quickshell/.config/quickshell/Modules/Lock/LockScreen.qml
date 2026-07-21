@@ -30,6 +30,7 @@ PanelWindow {
     property color textMuted:      typeof root !== 'undefined' ? root.textMuted      : "#64748B"
     property color errorAccent:    typeof root !== 'undefined' ? root.errorAccent    : "#F2B8B5"
     property color errorSurface:   typeof root !== 'undefined' ? root.errorSurface    : "#2C161A"
+    property string backgroundImage: root.backgroundImage
 
     property real uiScale: 0.95
     property real uiOpacity: 0.0
@@ -117,7 +118,7 @@ PanelWindow {
         Image {
             id: backgroundWallpaper
             anchors.fill: parent
-            source: Qt.resolvedUrl("file://" + Quickshell.env("HOME") + "/Pictures/wallpapers/2054-3840x2160-desktop-4k-firewatch-background.jpg")
+            source: Qt.resolvedUrl("file://" + lockWindow.backgroundImage) // Qt.resolvedUrl("file://" + Quickshell.env("HOME") + "/Pictures/wallpapers/2054-3840x2160-desktop-4k-firewatch-background.jpg")
             fillMode: Image.PreserveAspectCrop
             smooth: true
             asynchronous: true

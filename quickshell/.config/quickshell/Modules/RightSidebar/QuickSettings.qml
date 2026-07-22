@@ -7,7 +7,7 @@ import "./../"
 Rectangle {
     id: settingsRoot
     Layout.fillWidth: true
-    Layout.fillHeight: true
+    implicitHeight: mainCol.implicitHeight + 20
     radius: 18
     color: shellContext ? shellContext.surfacePill : "#1C1C1E"
     property var shellContext: null
@@ -15,7 +15,10 @@ Rectangle {
     Procs { id: localProcs }
 
     ColumnLayout {
-        anchors.fill: parent
+        id: mainCol
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         anchors.margins: 10
         spacing: 8
 
@@ -52,16 +55,6 @@ Rectangle {
                             anchors.leftMargin: 16
                             anchors.rightMargin: 16
                             spacing: 0
-                            /* Text {
-                                id: volIcon
-                                text: volSlider.value > 0 ? "\ue050" : "\ue04f"
-                                font.pointSize: 16
-                                font.family: "Material Symbols Rounded"
-                                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                                Layout.leftMargin: 16
-                                color: volSlider.visualPosition > 0.15 ? "#2C2C2E" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
-                                z: 2
-                            } */
                             Item { Layout.fillWidth: true }
                             Text {
                                 text: Math.round(volSlider.value * 100) + "%"
@@ -77,8 +70,7 @@ Rectangle {
                         implicitWidth: 36
                         implicitHeight: 36
                         radius: 18
-                        color: "transparent" // settingsRoot.shellContext ? settingsRoot.shellContext.accentNormal : "#8AB4F8"
-
+                        color: "transparent"
                         border.color: volSlider.pressed ? "#FFFFFF" : (settingsRoot.shellContext ? settingsRoot.shellContext.textPrimary : "#E6E1E5")
                         border.width: 0
 

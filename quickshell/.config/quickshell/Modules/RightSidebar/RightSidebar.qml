@@ -24,7 +24,6 @@ PanelWindow {
 
     property var shellContext: null
     property var settingsApp: shellContext ? shellContext.settingsApp : null
-
     property bool active: false
     Procs { id: localProcs }
 
@@ -69,6 +68,7 @@ PanelWindow {
             anchors.margins: 12
             spacing: 12
 
+            // Top Header Bar
             RowLayout {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
@@ -214,30 +214,29 @@ PanelWindow {
                 }
             }
 
+            // Quick Settings Card (Sized automatically to content)
             QuickSettings {
                 id: settingsCard
                 Layout.fillWidth: true
-                Layout.preferredHeight: sidebar.height * 0.23
+                Layout.preferredHeight: implicitHeight
                 shellContext: sidebar.shellContext
             }
-            MediaPlayer {
-                id: mediaPlayerSmall
-                Layout.fillWidth: true
-                visible: true
-                shellContext: sidebar.shellContext
-            }
+
+            // Notification List (Takes all remaining vertical space)
             NotificationList {
                 id: notifCard
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 shellContext: sidebar.shellContext
             }
-            /* UtilsList {
+
+            // Utils Container (Calendar / Timer - Flexibly sized)
+            UtilsList {
                 id: utilsCard
                 Layout.fillWidth: true
-                Layout.fillHeight: true
+                Layout.preferredHeight: 220
                 shellContext: sidebar.shellContext
-            } */
+            }
         }
     }
 }

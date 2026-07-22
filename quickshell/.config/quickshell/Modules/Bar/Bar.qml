@@ -105,7 +105,7 @@ PanelWindow {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: mediaPlayerBig.active = !mediaPlayerBig.active
+                    onClicked: mediaPlayerSmall.active = !mediaPlayerSmall.active
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                 }
@@ -218,8 +218,11 @@ PanelWindow {
                             Behavior on opacity { NumberAnimation { duration: 180 } }
 
                             MouseArea {
+                                id: workspaceMouse
                                 anchors.fill: parent
-                                onClicked: Hyprland.dispatch("workspace " + wsId)
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Hyprland.dispatch('workspace ${wsId}')
                             }
 
                             Text {

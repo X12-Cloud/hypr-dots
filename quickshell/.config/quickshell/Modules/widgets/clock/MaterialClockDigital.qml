@@ -66,16 +66,6 @@ PanelWindow {
         }
     }
 
-    /* DropShadow {
-        anchors.fill: clockBackground
-        horizontalOffset: 0
-        verticalOffset: 8
-        radius: 16.0
-        samples: 33
-        color: "#80000000"
-        source: clockBackground
-    } */ // Doesnt work that well with the canvas
-
     Rectangle {
         id: secondsBadge
         width: 75

@@ -45,7 +45,7 @@ ShellRoot {
     Loader { active: true; sourceComponent: Bar { shellContext: root } }
     RS.RightSidebar { id: rightSidebar; shellContext: root; }
     MP.MediaPlayerBig { id: mediaPlayerBig; shellContext: root; }
-    //DesktopClock {}
+    MP.MediaPlayerSmall { id: mediaPlayerSmall; shellContext: root; }
     MaterialClockDigital {}
 
     ST.SettingsApp {

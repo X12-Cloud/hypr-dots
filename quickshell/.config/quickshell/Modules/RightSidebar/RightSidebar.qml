@@ -28,6 +28,25 @@ PanelWindow {
     property bool active: false
     Procs { id: localProcs }
 
+    PanelWindow {
+        id: sidebarOverlay
+        WlrLayershell.layer: WlrLayer.Overlay
+
+        anchors.top: true
+        anchors.bottom: true
+        anchors.left: true
+        anchors.right: true
+        WlrLayershell.margins.right: 420
+
+        color: "transparent"
+        visible: sidebar.active
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: sidebar.active = false
+        }
+    }
+
     Rectangle {
         id: sidebarContent
         anchors.top: parent.top

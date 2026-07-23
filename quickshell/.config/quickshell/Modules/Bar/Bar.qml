@@ -321,32 +321,42 @@ PanelWindow {
                     }
 
                     // --- BRIGHTNESS BUTTON ---
-                    Text {
-                        id: brightnessBtn
-                        font.family: "Material Symbols Rounded"
-                        text: "\ue518" // You might want to update this tooltip/symbol to show % later
-                        font.pixelSize: 16
-                        color: brightnessMouse.containsMouse 
-                               ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
-                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
-                        anchors.verticalCenter: parent.verticalCenter
+                   Text {
+                        id: brightnessBtn
+                        font.family: "Material Symbols Rounded"
+                        text: "\ue518"
+                        font.pixelSize: 16
+                        color: brightnessMouse.containsMouse 
+                               ? (panel.shellContext ? panel.shellContext.accentNormal : "#8AB4F8")
+                               : (panel.shellContext ? panel.shellContext.textMuted : "#CAC4D0")
+                        anchors.verticalCenter: parent.verticalCenter
 
-                        Behavior on color { ColorAnimation { duration: 150 } }
+                        Behavior on color { ColorAnimation { duration: 150 } }
 
-                        MouseArea {
-                            id: brightnessMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            
-                            // Left click increases brightness
-                            onClicked: {
-                                localProcs.brightnessUp();
-                            }
-                            
-                            // (Optional) If you have wheel support, you could add scrolling later
-                            // onWheel: (wheel) => { ... }
-                        }
+                        MouseArea {
+                            id: brightnessMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                            onClicked: (mouse) => {
+                                if (mouse.button === Qt.LeftButton) {
+                                    localProcs.brightnessUp();
+                                } else if (mouse.button === Qt.RightButton) {
+                                    localProcs.brightnessDown();
+                                }
+                            }
+
+                            onWheel: (wheel) => {
+                                if (wheel.angleDelta.y > 0) {
+                                    localProcs.brightnessUp();
+                                } else if (wheel.angleDelta.y < 0) {
+                                    localProcs.brightnessDown();
+                                }
+                            }
+                        }
                     }
                 }
             }

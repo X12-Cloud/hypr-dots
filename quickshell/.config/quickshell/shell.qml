@@ -8,6 +8,7 @@ import "./Modules/RightSidebar" as RS
 import "./Modules/MediaPlayer" as MP
 import "./Modules/Lock/" as LS
 import "./Modules/Settings/" as ST
+import "./Modules/Osd/" as OSD
 import "./Modules/widgets/clock"
 import "./Modules/widgets/mediaPlayer"
 
@@ -49,6 +50,11 @@ ShellRoot {
     MP.MediaPlayerSmall { id: mediaPlayerSmall; shellContext: root; }
     MaterialClockDigital {}
     MediaPlayerMinimal {}
+    OSD.Osd {
+        id: osd
+        shellContext: root
+        visible: false
+    }
 
     ST.SettingsApp {
         id: settingsApp
